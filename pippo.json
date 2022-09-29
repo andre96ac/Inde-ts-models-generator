@@ -1,0 +1,1902 @@
+{
+    "edmx:Edmx": {
+        "$": {
+            "Version": "4.0",
+            "xmlns:edmx": "http://docs.oasis-open.org/odata/ns/edmx"
+        },
+        "edmx:DataServices": [
+            {
+                "Schema": [
+                    {
+                        "$": {
+                            "Namespace": "ComponenteClassi",
+                            "xmlns": "http://docs.oasis-open.org/odata/ns/edm"
+                        },
+                        "EntityType": [
+                            {
+                                "$": {
+                                    "Name": "ChatMessage"
+                                },
+                                "Property": [
+                                    {
+                                        "$": {
+                                            "Name": "ID",
+                                            "Type": "Edm.Int64"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "CREATIONTIME",
+                                            "Type": "Edm.DateTimeOffset"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "SRCUSER",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "DSTUSER",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "MESSAGE",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "1000"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "$": {
+                                    "Name": "Firma"
+                                },
+                                "Key": [
+                                    {
+                                        "PropertyRef": [
+                                            {
+                                                "$": {
+                                                    "Name": "ID"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "Property": [
+                                    {
+                                        "$": {
+                                            "Name": "ID",
+                                            "Nullable": "false",
+                                            "Type": "Edm.Guid"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "IDLista",
+                                            "Nullable": "false",
+                                            "Type": "Edm.Guid"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Ruolo",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "50"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Nominativo",
+                                            "Nullable": "false",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "50"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Firma",
+                                            "Type": "Edm.Binary"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Prog",
+                                            "Nullable": "false",
+                                            "d5p1:StoreGeneratedPattern": "Identity",
+                                            "Type": "Edm.Int32",
+                                            "xmlns:d5p1": "http://schemas.microsoft.com/ado/2009/02/edm/annotation"
+                                        }
+                                    }
+                                ],
+                                "NavigationProperty": [
+                                    {
+                                        "$": {
+                                            "Name": "Lista",
+                                            "Type": "ComponenteClassi.Lista",
+                                            "Partner": "ListeFirme"
+                                        },
+                                        "ReferentialConstraint": [
+                                            {
+                                                "$": {
+                                                    "Property": "IDLista",
+                                                    "ReferencedProperty": "ID"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "$": {
+                                    "Name": "Lista"
+                                },
+                                "Key": [
+                                    {
+                                        "PropertyRef": [
+                                            {
+                                                "$": {
+                                                    "Name": "ID"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "Property": [
+                                    {
+                                        "$": {
+                                            "Name": "ID",
+                                            "Nullable": "false",
+                                            "Type": "Edm.Guid"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "PROG",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "4"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "TipoLista",
+                                            "Nullable": "false",
+                                            "Type": "ComponenteClassi.Lista_TipoLista_Types"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "SIGLAReparto",
+                                            "Nullable": "false",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "2"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "IDProgetto",
+                                            "Nullable": "false",
+                                            "Type": "Edm.Guid"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Località",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "50"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "RifMezzo",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "50"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "IDNaveViaggio",
+                                            "Type": "Edm.Guid"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "SIGLATerminal",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "5"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "SIGLATerminalAD",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "5"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Data",
+                                            "Nullable": "false",
+                                            "Type": "Edm.Date"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "DataArrivo",
+                                            "Type": "Edm.DateTimeOffset"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "DataInizio",
+                                            "Type": "Edm.DateTimeOffset"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "DataFine",
+                                            "Type": "Edm.DateTimeOffset"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "RespOperazioni",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "50"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "UsrEdt",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "DateEdt",
+                                            "Type": "Edm.DateTimeOffset"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "UsrIns",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "DateIns",
+                                            "Nullable": "false",
+                                            "Type": "Edm.DateTimeOffset"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "IDMagazzino",
+                                            "Type": "Edm.Guid"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Località11",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "50"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "DataAggiornamento",
+                                            "Type": "Edm.DateTimeOffset"
+                                        }
+                                    }
+                                ],
+                                "NavigationProperty": [
+                                    {
+                                        "$": {
+                                            "Name": "Progetto",
+                                            "Type": "ComponenteClassi.Progetto"
+                                        },
+                                        "ReferentialConstraint": [
+                                            {
+                                                "$": {
+                                                    "Property": "IDProgetto",
+                                                    "ReferencedProperty": "ID"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "ListeFirme",
+                                            "Type": "Collection(ComponenteClassi.Firma)",
+                                            "Partner": "Lista"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "$": {
+                                    "Name": "ListaArticolo"
+                                },
+                                "Key": [
+                                    {
+                                        "PropertyRef": [
+                                            {
+                                                "$": {
+                                                    "Name": "ID"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "Property": [
+                                    {
+                                        "$": {
+                                            "Name": "ID",
+                                            "Nullable": "false",
+                                            "Type": "Edm.Guid"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "IDArticoloBase",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "20"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "CodiceArticolo",
+                                            "Nullable": "false",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "50"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "CodiceAlternativo",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "50"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Descrizione",
+                                            "Nullable": "false",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "150"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Note",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "1000"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Immagine",
+                                            "Type": "Edm.Binary"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "PesoLordo",
+                                            "Type": "Edm.Decimal",
+                                            "Precision": "12",
+                                            "Scale": "2"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "PesoNetto",
+                                            "Type": "Edm.Decimal",
+                                            "Precision": "12",
+                                            "Scale": "2"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Lung",
+                                            "Type": "Edm.Int32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Larg",
+                                            "Type": "Edm.Int32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Altezza",
+                                            "Type": "Edm.Int32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "MC",
+                                            "Type": "Edm.Decimal",
+                                            "Precision": "15",
+                                            "Scale": "3"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "IDListaEntrata",
+                                            "Type": "Edm.Guid"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "IDListaUscita",
+                                            "Type": "Edm.Guid"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "DataUscita",
+                                            "Type": "Edm.DateTimeOffset"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "DataEntrata",
+                                            "Type": "Edm.DateTimeOffset"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "UsrEdt",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "DateEdt",
+                                            "Type": "Edm.DateTimeOffset"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "UsrIns",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "DateIns",
+                                            "Nullable": "false",
+                                            "Type": "Edm.DateTimeOffset"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "IDMagazzino",
+                                            "Type": "Edm.Guid"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "MQ",
+                                            "Type": "Edm.Decimal",
+                                            "Precision": "15",
+                                            "Scale": "3"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "MQ30",
+                                            "Type": "Edm.Decimal",
+                                            "Precision": "15",
+                                            "Scale": "3"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "MagIdMagMovim",
+                                            "Type": "Edm.Guid"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "PercMQ",
+                                            "Type": "Edm.Decimal",
+                                            "Precision": "9",
+                                            "Scale": "2"
+                                        }
+                                    }
+                                ],
+                                "NavigationProperty": [
+                                    {
+                                        "$": {
+                                            "Name": "ListaEntrata",
+                                            "Type": "ComponenteClassi.Lista"
+                                        },
+                                        "ReferentialConstraint": [
+                                            {
+                                                "$": {
+                                                    "Property": "IDListaEntrata",
+                                                    "ReferencedProperty": "ID"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "ListaUscita",
+                                            "Type": "ComponenteClassi.Lista"
+                                        },
+                                        "ReferentialConstraint": [
+                                            {
+                                                "$": {
+                                                    "Property": "IDListaUscita",
+                                                    "ReferencedProperty": "ID"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "LAAttivita",
+                                            "Type": "Collection(ComponenteClassi.ListaAttivita)",
+                                            "Partner": "ListaArticolo"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "LARiscontri",
+                                            "Type": "Collection(ComponenteClassi.ListaRiscontro)",
+                                            "Partner": "ListaArticolo"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "$": {
+                                    "Name": "ListaAttivita"
+                                },
+                                "Key": [
+                                    {
+                                        "PropertyRef": [
+                                            {
+                                                "$": {
+                                                    "Name": "ID"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "Property": [
+                                    {
+                                        "$": {
+                                            "Name": "ID",
+                                            "Nullable": "false",
+                                            "Type": "Edm.Guid"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "IDListaArticolo",
+                                            "Nullable": "false",
+                                            "Type": "Edm.Guid"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Sequenza",
+                                            "Nullable": "false",
+                                            "Type": "Edm.Int64"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Descrizione",
+                                            "Nullable": "false",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "200"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Note",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "1000"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "UsrEdt",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "DateEdt",
+                                            "Type": "Edm.DateTimeOffset"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "UsrIns",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "DateIns",
+                                            "Nullable": "false",
+                                            "Type": "Edm.DateTimeOffset"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "CheckEntrata",
+                                            "Type": "ComponenteClassi.ListaAttivita_CheckEntrata_Types"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "CheckUscita",
+                                            "Type": "ComponenteClassi.ListaAttivita_CheckEntrata_Types"
+                                        }
+                                    }
+                                ],
+                                "NavigationProperty": [
+                                    {
+                                        "$": {
+                                            "Name": "ListaArticolo",
+                                            "Type": "ComponenteClassi.ListaArticolo",
+                                            "Partner": "LAAttivita"
+                                        },
+                                        "ReferentialConstraint": [
+                                            {
+                                                "$": {
+                                                    "Property": "IDListaArticolo",
+                                                    "ReferencedProperty": "ID"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "$": {
+                                    "Name": "ListaRiscontro"
+                                },
+                                "Key": [
+                                    {
+                                        "PropertyRef": [
+                                            {
+                                                "$": {
+                                                    "Name": "ID"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "Property": [
+                                    {
+                                        "$": {
+                                            "Name": "ID",
+                                            "Nullable": "false",
+                                            "Type": "Edm.Guid"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "IDListaArticolo",
+                                            "Nullable": "false",
+                                            "Type": "Edm.Guid"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "TipoLista",
+                                            "Nullable": "false",
+                                            "Type": "ComponenteClassi.Lista_TipoLista_Types"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Riferimento",
+                                            "Nullable": "false",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "20"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Descrizione",
+                                            "Nullable": "false",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "2000"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Foto",
+                                            "Type": "Edm.Binary"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "UsrEdt",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "DateEdt",
+                                            "Type": "Edm.DateTimeOffset"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "UsrIns",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "DateIns",
+                                            "Nullable": "false",
+                                            "Type": "Edm.DateTimeOffset"
+                                        }
+                                    }
+                                ],
+                                "NavigationProperty": [
+                                    {
+                                        "$": {
+                                            "Name": "ListaArticolo",
+                                            "Type": "ComponenteClassi.ListaArticolo",
+                                            "Partner": "LARiscontri"
+                                        },
+                                        "ReferentialConstraint": [
+                                            {
+                                                "$": {
+                                                    "Property": "IDListaArticolo",
+                                                    "ReferencedProperty": "ID"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "$": {
+                                    "Name": "Progetto"
+                                },
+                                "Key": [
+                                    {
+                                        "PropertyRef": [
+                                            {
+                                                "$": {
+                                                    "Name": "ID"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "Property": [
+                                    {
+                                        "$": {
+                                            "Name": "ID",
+                                            "Nullable": "false",
+                                            "Type": "Edm.Guid"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "ANNO",
+                                            "Nullable": "false",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "4"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Progressivo",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "4"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Descrizione",
+                                            "Nullable": "false",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "150"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "DataInizio",
+                                            "Nullable": "false",
+                                            "Type": "Edm.Date"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "DataFine",
+                                            "Type": "Edm.Date"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Riferimenti",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "150"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "IDCliente",
+                                            "Nullable": "false",
+                                            "Type": "Edm.Guid"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "NoteGenerali",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "3000"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "UsrEdt",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "DateEdt",
+                                            "Type": "Edm.DateTimeOffset"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "UsrIns",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "DateIns",
+                                            "Nullable": "false",
+                                            "Type": "Edm.DateTimeOffset"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "$": {
+                                    "Name": "Vfxdesk"
+                                },
+                                "Property": [
+                                    {
+                                        "$": {
+                                            "Name": "UTENTEVFXUSR",
+                                            "Nullable": "false",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "PAGINA",
+                                            "Nullable": "false",
+                                            "Type": "Edm.Int32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "POSIZIONE",
+                                            "Nullable": "false",
+                                            "Type": "Edm.Int32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "GRAFICO",
+                                            "Nullable": "false",
+                                            "Type": "ComponenteClassi.Vfxdesk_GRAFICO_Types"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "FUNZIONE",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "100"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "OPZIONGRAFIC",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "9999"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "ID",
+                                            "Nullable": "false",
+                                            "d5p1:StoreGeneratedPattern": "Identity",
+                                            "Type": "Edm.Int32",
+                                            "xmlns:d5p1": "http://schemas.microsoft.com/ado/2009/02/edm/annotation"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "TITOLO",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "80"
+                                        }
+                                    }
+                                ],
+                                "Key": [
+                                    {
+                                        "PropertyRef": [
+                                            {
+                                                "$": {
+                                                    "Name": "ID"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "NavigationProperty": [
+                                    {
+                                        "$": {
+                                            "Name": "Vfxusr",
+                                            "Type": "ComponenteClassi.Vfxusr",
+                                            "Partner": "Vfxdesk"
+                                        },
+                                        "ReferentialConstraint": [
+                                            {
+                                                "$": {
+                                                    "Property": "UTENTEVFXUSR",
+                                                    "ReferencedProperty": "Utente"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "$": {
+                                    "Name": "Vfxres"
+                                },
+                                "Key": [
+                                    {
+                                        "PropertyRef": [
+                                            {
+                                                "$": {
+                                                    "Name": "IDVFXRES"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "Property": [
+                                    {
+                                        "$": {
+                                            "Name": "IDVFXRES",
+                                            "Nullable": "false",
+                                            "d5p1:StoreGeneratedPattern": "Identity",
+                                            "Type": "Edm.Int32",
+                                            "xmlns:d5p1": "http://schemas.microsoft.com/ado/2009/02/edm/annotation"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "UTENTE",
+                                            "Nullable": "false",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "OBJNAME",
+                                            "Nullable": "false",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "128"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "INDICE",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "9999"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "DESCENDING",
+                                            "Type": "Edm.Int32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "LAYOUT",
+                                            "Nullable": "false",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "99999"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "PAGE",
+                                            "Type": "Edm.Int32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "TOOLBAR",
+                                            "Type": "Edm.Int32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "GUID",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "50"
+                                        }
+                                    }
+                                ],
+                                "NavigationProperty": [
+                                    {
+                                        "$": {
+                                            "Name": "Vfxusr",
+                                            "Type": "ComponenteClassi.Vfxusr",
+                                            "Partner": "Vfxres"
+                                        },
+                                        "ReferentialConstraint": [
+                                            {
+                                                "$": {
+                                                    "Property": "UTENTE",
+                                                    "ReferencedProperty": "Utente"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "$": {
+                                    "Name": "Vfxusr"
+                                },
+                                "Key": [
+                                    {
+                                        "PropertyRef": [
+                                            {
+                                                "$": {
+                                                    "Name": "Utente"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "Property": [
+                                    {
+                                        "$": {
+                                            "Name": "Utente",
+                                            "Nullable": "false",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Psw",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "UserName",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Userlevel",
+                                            "Type": "ComponenteClassi.Vfxusr_Userlevel_Types"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Useraccess",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "9999"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Firstview",
+                                            "Type": "Edm.Int16"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Lastsel",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "9999"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Formsize",
+                                            "Type": "Edm.Decimal",
+                                            "Precision": "2",
+                                            "Scale": "1"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Agent",
+                                            "Type": "Edm.Int32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Favorites",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "9999"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Lastfile",
+                                            "Type": "Edm.Int16"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Reparto",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "2"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Email",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "50"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "RepSogg",
+                                            "Type": "Edm.Int32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "PrgEmail",
+                                            "Type": "Edm.Int16"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "NoStft",
+                                            "Type": "Edm.Int32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "MacroObb",
+                                            "Type": "Edm.Int32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Macrorep",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "1"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Dimsizefor",
+                                            "Type": "Edm.Int32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Viewpdf",
+                                            "Type": "Edm.Int32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "PraCopSt",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "10"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Chpassall",
+                                            "Type": "Edm.Int16"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Chpassnext",
+                                            "Nullable": "false",
+                                            "Type": "ComponenteClassi.Vfxusr_Chpassnext_Types"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Lingua",
+                                            "Type": "ComponenteClassi.Vfxusr_Lingua_Types"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Allusrcust",
+                                            "Type": "Edm.Int32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Mulusrlog",
+                                            "Type": "Edm.Int32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Fltrpermit",
+                                            "Type": "Edm.Int16"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Mreppermit",
+                                            "Type": "Edm.Int16"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "DecPunt",
+                                            "Type": "Edm.Int32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Idvfxusr",
+                                            "Type": "Edm.Int64"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Ntlogon",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "RepartiAccessibili",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "50"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Prafiltini",
+                                            "Type": "Edm.Int32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Firmaemail",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "9999"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Luogo",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "25"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Bigicon",
+                                            "Type": "Edm.Int32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Pratlistor",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "35"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Viaggio",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "8"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Sede",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "2"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Strongpass",
+                                            "Nullable": "false",
+                                            "Type": "ComponenteClassi.Vfxusr_Chpassnext_Types"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Uniquepass",
+                                            "Type": "Edm.Int32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Passexpiry",
+                                            "Type": "Edm.Date"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Histrypass",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "9999"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Notactive",
+                                            "Type": "Edm.Int32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "WWWWelcome",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "200"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Area",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "4"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "MessageSave",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "100"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "ServerEtichette",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "50"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "PasswordEmail",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "50"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "AreaDiAccesso",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "4"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Iniziali",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "2"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Foto",
+                                            "Type": "Edm.Binary"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "ModelliPratica",
+                                            "Nullable": "false",
+                                            "Type": "ComponenteClassi.Vfxusr_Chpassnext_Types"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "SiglaCtrs",
+                                            "Nullable": "false",
+                                            "Type": "ComponenteClassi.Vfxusr_Chpassnext_Types"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "SigilloCtrs",
+                                            "Nullable": "false",
+                                            "Type": "ComponenteClassi.Vfxusr_Chpassnext_Types"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Qta",
+                                            "Nullable": "false",
+                                            "Type": "ComponenteClassi.Vfxusr_Chpassnext_Types"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "PesoNetto",
+                                            "Nullable": "false",
+                                            "Type": "ComponenteClassi.Vfxusr_Chpassnext_Types"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "PesoLordo",
+                                            "Nullable": "false",
+                                            "Type": "ComponenteClassi.Vfxusr_Chpassnext_Types"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "NascondereUtile",
+                                            "Nullable": "false",
+                                            "Type": "ComponenteClassi.Vfxusr_Chpassnext_Types"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Nochkiva",
+                                            "Nullable": "false",
+                                            "Type": "ComponenteClassi.Vfxusr_Chpassnext_Types"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "MessageunreadU",
+                                            "Type": "Edm.Int32"
+                                        }
+                                    }
+                                ],
+                                "NavigationProperty": [
+                                    {
+                                        "$": {
+                                            "Name": "Vfxres",
+                                            "Type": "Collection(ComponenteClassi.Vfxres)",
+                                            "Partner": "Vfxusr"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "VfxUsrGrp",
+                                            "Type": "Collection(ComponenteClassi.VfxUsrGrp)",
+                                            "Partner": "Vfxusr"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "ChatMessage",
+                                            "Type": "Collection(ComponenteClassi.ChatMessage)"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Vfxdesk",
+                                            "Type": "Collection(ComponenteClassi.Vfxdesk)",
+                                            "Partner": "Vfxusr"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "$": {
+                                    "Name": "VfxUsrGrp"
+                                },
+                                "Key": [
+                                    {
+                                        "PropertyRef": [
+                                            {
+                                                "$": {
+                                                    "Name": "ID"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "Property": [
+                                    {
+                                        "$": {
+                                            "Name": "ID",
+                                            "Nullable": "false",
+                                            "d5p1:StoreGeneratedPattern": "Identity",
+                                            "Type": "Edm.Int32",
+                                            "xmlns:d5p1": "http://schemas.microsoft.com/ado/2009/02/edm/annotation"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "UTENTEVFXUSR",
+                                            "Nullable": "false",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "32"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "GRUPPOVFXGRP",
+                                            "Nullable": "false",
+                                            "Type": "Edm.String",
+                                            "MaxLength": "25"
+                                        }
+                                    }
+                                ],
+                                "NavigationProperty": [
+                                    {
+                                        "$": {
+                                            "Name": "Vfxusr",
+                                            "Type": "ComponenteClassi.Vfxusr",
+                                            "Partner": "VfxUsrGrp"
+                                        },
+                                        "ReferentialConstraint": [
+                                            {
+                                                "$": {
+                                                    "Property": "UTENTEVFXUSR",
+                                                    "ReferencedProperty": "Utente"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ],
+                        "EntityContainer": [
+                            {
+                                "$": {
+                                    "Name": "ComponenteClassi"
+                                },
+                                "EntitySet": [
+                                    {
+                                        "$": {
+                                            "Name": "Firma",
+                                            "EntityType": "ComponenteClassi.Firma"
+                                        },
+                                        "NavigationPropertyBinding": [
+                                            {
+                                                "$": {
+                                                    "Path": "Lista",
+                                                    "Target": "Lista"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Lista",
+                                            "EntityType": "ComponenteClassi.Lista"
+                                        },
+                                        "NavigationPropertyBinding": [
+                                            {
+                                                "$": {
+                                                    "Path": "Progetto",
+                                                    "Target": "Progetto"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "ListaArticolo",
+                                            "EntityType": "ComponenteClassi.ListaArticolo"
+                                        },
+                                        "NavigationPropertyBinding": [
+                                            {
+                                                "$": {
+                                                    "Path": "ListaEntrata",
+                                                    "Target": "Lista"
+                                                }
+                                            },
+                                            {
+                                                "$": {
+                                                    "Path": "ListaUscita",
+                                                    "Target": "Lista"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "ListaAttivita",
+                                            "EntityType": "ComponenteClassi.ListaAttivita"
+                                        },
+                                        "NavigationPropertyBinding": [
+                                            {
+                                                "$": {
+                                                    "Path": "ListaArticolo",
+                                                    "Target": "ListaArticolo"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "ListaRiscontro",
+                                            "EntityType": "ComponenteClassi.ListaRiscontro"
+                                        },
+                                        "NavigationPropertyBinding": [
+                                            {
+                                                "$": {
+                                                    "Path": "ListaArticolo",
+                                                    "Target": "ListaArticolo"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Progetto",
+                                            "EntityType": "ComponenteClassi.Progetto"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Vfxusr",
+                                            "EntityType": "ComponenteClassi.Vfxusr"
+                                        }
+                                    }
+                                ]
+                            }
+                        ],
+                        "EnumType": [
+                            {
+                                "$": {
+                                    "Name": "Lista_TipoLista_Types",
+                                    "UnderlyingType": "Edm.String"
+                                },
+                                "Member": [
+                                    {
+                                        "$": {
+                                            "Name": "Entrata Dep.",
+                                            "Value": "Carico"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Uscita Dep.",
+                                            "Value": "Scarico"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "$": {
+                                    "Name": "ListaAttivita_CheckEntrata_Types",
+                                    "UnderlyingType": "Edm.String"
+                                },
+                                "Member": [
+                                    {
+                                        "$": {
+                                            "Name": "OK",
+                                            "Value": "OK"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Non OK",
+                                            "Value": "Non OK"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "$": {
+                                    "Name": "Vfxdesk_GRAFICO_Types",
+                                    "UnderlyingType": "Edm.String"
+                                },
+                                "Member": [
+                                    {
+                                        "$": {
+                                            "Name": "Barre",
+                                            "Value": "Barre"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Torta",
+                                            "Value": "Torta"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Geo",
+                                            "Value": "Geo"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Temporale",
+                                            "Value": "Temporale"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Tabellare",
+                                            "Value": "Tabellare"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Note",
+                                            "Value": "Note"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Chat",
+                                            "Value": "Chat"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "$": {
+                                    "Name": "Vfxusr_Userlevel_Types",
+                                    "UnderlyingType": "Edm.Int16"
+                                },
+                                "Member": [
+                                    {
+                                        "$": {
+                                            "Name": "Amministratore",
+                                            "Value": "1"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Contabile",
+                                            "Value": "2"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Utente Super",
+                                            "Value": "3"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Utente Normale",
+                                            "Value": "4"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Utente Magazzino",
+                                            "Value": "6"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Utente Trasporti",
+                                            "Value": "7"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Utente Esterno",
+                                            "Value": "8"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Anonimo",
+                                            "Value": "9"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Administrator",
+                                            "Value": "10"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "Administrator",
+                                            "Value": "11"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "$": {
+                                    "Name": "Vfxusr_Chpassnext_Types"
+                                },
+                                "Member": [
+                                    {
+                                        "$": {
+                                            "Name": "true",
+                                            "Value": "-1"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "false",
+                                            "Value": "0"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "$": {
+                                    "Name": "Vfxusr_Lingua_Types",
+                                    "UnderlyingType": "Edm.String"
+                                },
+                                "Member": [
+                                    {
+                                        "$": {
+                                            "Name": "ITA",
+                                            "Value": "ITA"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "ENG",
+                                            "Value": "ENG"
+                                        }
+                                    },
+                                    {
+                                        "$": {
+                                            "Name": "USA",
+                                            "Value": "USA"
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

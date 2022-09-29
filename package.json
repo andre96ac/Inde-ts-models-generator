@@ -3,10 +3,21 @@
   "version": "1.0.0",
   "description": "script used to generate *.model.ts class files starting from instant developer $metadata xml descriptor",
   "main": "app.js",
-  "type":"module",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "node build/app.js"
   },
   "author": "Andrea Cuppini",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "xml2js": "^0.4.23",
+    "yargs": "^17.5.1"
+  },
+  "devDependencies": {
+    "@types/xml2js": "^0.4.11",
+    "@types/yargs": "^17.0.13"
+  }
 }
