@@ -1,5 +1,5 @@
 import * as fs from 'fs/promises'
-import { ERROR_CODES, TS_TYPES } from './utils.js';
+import { ERROR_CODES, TS_TYPES } from './various.js';
 export class ClassGenerator{
 
     private arProperties: ClassGeneratorProperty[] = [];

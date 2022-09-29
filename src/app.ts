@@ -1,7 +1,7 @@
 import axios from "axios"
 import {parseStringPromise} from "xml2js"
 import {writeFile} from 'fs/promises'
-import { ClassGenerator } from "./class-generator.js"
+import { ClassGenerator } from "./utils/class-generator.js"
 
 const MYURL = 'https://speedyweb.islashipweb.com/$metadata'
 
