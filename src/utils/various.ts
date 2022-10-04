@@ -1,12 +1,14 @@
 export enum ERROR_CODES{
-    ERR_SAVING_MODEL_FILE = 0,
+    ERR_GENERIC = 1,
+    ERR_SAVING_MODEL_FILE = 40,
     ERR_READING_METADATA_FILE = 10,
     ERR_FETCHING_METADATA_URL = 20,
     ERR_PROCESSING_XML = 30,
+    ERR_PARAMETERS = 50
 }
 
 
-export interface myError{
+export interface MyError{
     error: Error,
     code: ERROR_CODES
 }
@@ -36,11 +38,7 @@ export const INDE_TS_TYPES_MAP: Record<TS_TYPES, INDE_TYPES[]> = {
     boolean: ["Edm.Binary"],
     Date: ["Edm.Date", "Edm.DateTimeOffset"]
 }
-// export const INDE_TS_TYPES_MAP: Record<INDE_TYPES, TS_TYPES> = {
-//     character: "string",
-//     i16: "string",
-//     i32: "string"
-// }
+
 export function converToTsType(indeType: INDE_TYPES): TS_TYPES | null{
 
     let finalType: TS_TYPES | null = null;
@@ -51,5 +49,9 @@ export function converToTsType(indeType: INDE_TYPES): TS_TYPES | null{
    })
 
    return finalType;
+}
+
+export function mapError(err: Error, errorCode: ERROR_CODES = ERROR_CODES.ERR_GENERIC): MyError{
+    return {error: err, code: errorCode}
 }
 

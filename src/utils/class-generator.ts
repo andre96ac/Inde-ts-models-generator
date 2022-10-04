@@ -1,12 +1,12 @@
 import * as fs from 'fs/promises'
-import { ERROR_CODES, TS_TYPES } from './various.js';
+import { ERROR_CODES, mapError, TS_TYPES } from './various.js';
 export class ClassGenerator{
 
     private arProperties: ClassGeneratorProperty[] = [];
 
     private suppliedName: string = '';
 
-    public initProperties: boolean = true;
+    private initProperties: boolean;
 
 
 
@@ -119,9 +119,14 @@ export class ClassGenerator{
         return start + properties + end
     }
 
+    public constructor(name: string, initProperties = true){
+        this.suppliedName = name;
+        this.initProperties = initProperties;
+    }
+
 
     
-    public addProperty(name: string, type: TS_TYPES, required = false, privateField = false): void{
+    public addProperty(name: string, type: TS_TYPES, required = false, privateField = false): ClassGenerator{
         if(!!name && name.length > 0 && !!type && type.length > 0 && required !== null && required !== undefined){
             this.arProperties.push({
                 name: name,
@@ -134,14 +139,12 @@ export class ClassGenerator{
         else{
             console.warn(`Error, property ${name} ignored, not all parameters supplied`);
         }
+
+        return this
     }
 
 
-    public setName(className: string): void{
-        if(!!className && className.length > 0){
-            this.suppliedName = className.trim()
-        }
-    }
+    
 
 
     public saveOnFileSystem(path: string): Promise<void>{
@@ -150,7 +153,7 @@ export class ClassGenerator{
         const finalPath: string = `${path}${path.endsWith('/')? '' : '/'}${this.fileName}`
 
         return fs.writeFile(finalPath, fileContent)
-        .catch(err => Promise.reject({code: ERROR_CODES.ERR_SAVING_MODEL_FILE, error: err}))
+        .catch(err => Promise.reject(mapError(err, ERROR_CODES.ERR_SAVING_MODEL_FILE)))
     }
 }
 

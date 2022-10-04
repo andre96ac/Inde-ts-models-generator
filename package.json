@@ -4,10 +4,14 @@
   "description": "script used to generate *.model.ts class files starting from instant developer $metadata xml descriptor",
   "main": "app.js",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/andre96ac/Inde-ts-models-generator.git"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start": "node build/app.js"
+    "start": "node build/app.js generate"
   },
   "author": "Andrea Cuppini",
   "license": "ISC",
