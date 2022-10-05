@@ -1,0 +1,2 @@
+- proprietà pubbliche o private
+- inizializzazione proprietà non primitive

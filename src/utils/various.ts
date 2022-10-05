@@ -39,17 +39,7 @@ export const INDE_TS_TYPES_MAP: Record<TS_TYPES, INDE_TYPES[]> = {
     Date: ["Edm.Date", "Edm.DateTimeOffset"]
 }
 
-export function converToTsType(indeType: INDE_TYPES): TS_TYPES | null{
 
-    let finalType: TS_TYPES | null = null;
-   let arTsTypes  = Object.keys(INDE_TS_TYPES_MAP) as TS_TYPES[];
-   arTsTypes.forEach((key: TS_TYPES, idx, other) => {
-    if(INDE_TS_TYPES_MAP[key].includes(indeType))
-        finalType = key;
-   })
-
-   return finalType;
-}
 
 export function mapError(err: Error, errorCode: ERROR_CODES = ERROR_CODES.ERR_GENERIC): MyError{
     return {error: err, code: errorCode}

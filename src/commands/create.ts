@@ -3,9 +3,10 @@
 import yargs from 'yargs'
 import {hideBin} from 'yargs/helpers'
 import axios from "axios"
-import { ERROR_CODES, mapError, MyError } from '../utils/various.js'
+import { ERROR_CODES, INDE_TS_TYPES_MAP, INDE_TYPES, mapError, MyError, TS_TYPES } from '../utils/various.js'
 import * as fs from 'fs/promises'
 import {parseStringPromise} from "xml2js"
+import { ClassGenerator } from '../utils/class-generator.js'
 
 
 
@@ -76,13 +77,25 @@ function createCommandHandler(args: yargs.ArgumentsCamelCase<{}>){
         .then(xmlData => getComponentsArrayFromXml(xmlData))
         .then(componentsArray => selectComponentsFromList(componentsArray, ['compgouego']))
         .then(componentsArray => {
-           fs.writeFile('tests/new.json', JSON.stringify(componentsArray))
+
+
+            let arTsClasses: ClassGenerator[] = createArTsClassesFromArEntityType(componentsArray[0].EntityType)
+            arTsClasses.forEach(el => {el.saveOnFileSystem('tests')})
+
+        //    fs.writeFile('tests/new.json', JSON.stringify(componentsArray))
             console.log('All done')
         })
         .catch((err: MyError) => {
-            console.error('some errors occurred creating files, please read below');
-            console.error(`ErrorCode: ${err.code}`)
-            console.error(`ErrorMessage: ${err.error}`)
+            if(err instanceof Error){
+                console.error('some errors occurred creating files, please read below');
+                console.error('Error: ', err);
+
+            }
+            else{
+                console.error('some errors occurred creating files, please read below');
+                console.error(`ErrorCode: ${err.code}`)
+                console.error(`ErrorMessage: ${err.error}`)
+            }
         } )
    
 
@@ -136,7 +149,7 @@ function loadMetadata(sourceUrl?: string, sourceFile?: string): Promise<string>{
  * @param xmlData Stringa contenente i metadati in xml
  * @returns 
  */
-function getComponentsArrayFromXml(xmlData: string): Promise<Object[]>{
+function getComponentsArrayFromXml(xmlData: string): Promise<Record<string, any>[]>{
     return parseStringPromise(xmlData)
     .then(data => {
         //get Edmx OBJ
@@ -182,7 +195,7 @@ function getComponentsArrayFromXml(xmlData: string): Promise<Object[]>{
  * @param arComponents array dei componenti in arrivo da inde (già puliti)
  * @param whiteList array di nomi dei componenti da conservare
  */
-function selectComponentsFromList(arComponents: Object[], whiteList: string[]): Object[]{
+function selectComponentsFromList(arComponents: Record<string, any>[], whiteList?: string[]): Record<string, any>[]{
     if(!whiteList || whiteList.length == 0){
         console.warn('Component whitelist not found, selecting all components')
         return arComponents;
@@ -191,13 +204,76 @@ function selectComponentsFromList(arComponents: Object[], whiteList: string[]): 
         whiteList = whiteList.map(el => el.toLowerCase())
         return arComponents.filter((el:Record<string, any>) => {
             const name = el.EntityContainer[0]?.$?.Name?.toLowerCase();
-            return whiteList.includes(name)
+            return whiteList?.includes(name)
         })
     }
 }
 
-// function createFilesFromArComponents(arComponents: any[]):Promise<void>{
+function createArTsClassesFromArEntityType(arEntityType: Record<string,any>[]):ClassGenerator[]{
     // #TODO
-// }
 
+    return arEntityType.map(elEntity => createTsFromSingleObj(elEntity));
+    
+}
+
+
+
+
+
+function createTsFromSingleObj(objEntity: Record<string, any>): ClassGenerator{
+    
+    let finalObj: null | ClassGenerator = null;
+    
+    const name = objEntity.$.Name;
+
+
+    finalObj = new ClassGenerator(name);
+    const arProperties:Record<string, any>[] = objEntity.Property;
+
+    if(!!arProperties && arProperties.length > 0){
+
+        arProperties.forEach(prop => {
+    
+        const propName = prop.$.Name;
+        const finalType = converToTsType(prop.$.Type);
+        const required = prop.$.Nullable == "false";
+    
+    
+            if(!! finalObj){
+                finalObj = finalObj.addProperty(propName, finalType, required, false)
+            }
+        })
+    }
+
+    
+
+    return finalObj
+}
+
+
+
+
+/**
+ * converte il tipo proveniente da inde in tipo typescript (se il tipo non è standard, si suppone sia un enum)
+ * @param indeType tipo proveniente da inde
+ * @returns 
+ */
+export function converToTsType(indeType: INDE_TYPES | string): TS_TYPES | string{
+
+    let finalType: TS_TYPES | string | null = null;
+   let arTsTypes  = Object.keys(INDE_TS_TYPES_MAP) as TS_TYPES[];
+   arTsTypes.forEach((key: TS_TYPES, idx, other) => {
+    
+    if(INDE_TS_TYPES_MAP[key].includes(indeType as INDE_TYPES))
+        finalType = key;
+   })
+
+   if(finalType == null){
+        // si suppone che il tipo sia un enum, tolgo i punti e prendo solo l'ultima parte
+        const tokens = indeType.split('.');
+        finalType = tokens[tokens.length];
+   }
+
+   return finalType;
+}
 

@@ -88,7 +88,7 @@ export class ClassGenerator{
         return (letter === letter.toUpperCase());
     }
 
-    private getInitValueForType(type: TS_TYPES): string{
+    private getInitValueForType(type: TS_TYPES | string): string{
         let returnValue = '';
         switch(type){
             case "Date":
@@ -109,11 +109,17 @@ export class ClassGenerator{
 
         const end = `}`
 
-        const properties: string = this.arProperties
-        .map((el) => {
-            return  `\t${el.private? 'private' : 'public'} ${el.name}${el.required? '': '?'}: ${el.type}${this.initProperties? this.getInitValueForType(el.type) : ''};\n`
-        })
-        .reduce((el, acc) => acc + el)
+        let properties: string = '';
+
+        if(!! this.arProperties && this.arProperties.length > 0){
+            properties = this.arProperties
+            .map((el) => {
+                return  `\t${el.private? 'private' : 'public'} ${el.name}${el.required? '': '?'}: ${el.type}${this.initProperties? this.getInitValueForType(el.type) : ''};\n`
+            })
+            .reduce((el, acc) => acc + el)
+
+        }
+        
 
 
         return start + properties + end
@@ -125,8 +131,14 @@ export class ClassGenerator{
     }
 
 
+    public addPrimaryKey(name: string, type: TS_TYPES, required = false, privateField = false): ClassGenerator{
+        this.addProperty(name, type, required, privateField)
+        return this;
+    }
+
+
     
-    public addProperty(name: string, type: TS_TYPES, required = false, privateField = false): ClassGenerator{
+    public addProperty(name: string, type: TS_TYPES | string, required = false, privateField = false): ClassGenerator{
         if(!!name && name.length > 0 && !!type && type.length > 0 && required !== null && required !== undefined){
             this.arProperties.push({
                 name: name,
@@ -161,7 +173,7 @@ export class ClassGenerator{
 
 export interface ClassGeneratorProperty{
     name: string,
-    type: TS_TYPES,
+    type: TS_TYPES | string,
     required: boolean;
     private: boolean;
 }
