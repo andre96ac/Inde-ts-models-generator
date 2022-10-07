@@ -9,6 +9,9 @@ export class ClassGenerator{
     private initProperties: boolean;
 
 
+    private arImports: ClassGeneratorImport[] = [];
+
+
 
 
 
@@ -83,6 +86,9 @@ export class ClassGenerator{
     }
 
 
+   
+
+
 
     private isUppercase(letter: string): boolean{
         return (letter === letter.toUpperCase());
@@ -119,10 +125,15 @@ export class ClassGenerator{
             .reduce((el, acc) => acc + el)
 
         }
+
+        const imports: string = this.arImports.length > 0? this.arImports.map(el => {
+            return  `import { ${el.tokens.map((token, idx) => `${token}, ` ).reduce((stringToken, acc) => (stringToken + acc)).slice(0, -2)} } from '${el.sourcePathName}'\n`
+        })
+        .reduce((el, acc) => el + acc) : '';
         
 
 
-        return start + properties + end
+        return imports + start + properties + end
     }
 
     public constructor(name: string, initProperties = true){
@@ -159,6 +170,11 @@ export class ClassGenerator{
     
 
 
+    /**
+     * Salva la classe nel percorso specificato
+     * @param path 
+     * @returns 
+     */
     public saveOnFileSystem(path: string): Promise<void>{
         const fileContent: string = this.getFileContentString();
 
@@ -166,6 +182,37 @@ export class ClassGenerator{
 
         return fs.writeFile(finalPath, fileContent)
         .catch(err => Promise.reject(mapError(err, ERROR_CODES.ERR_SAVING_MODEL_FILE)))
+    }
+
+
+    /**
+     * Aggiunge un elemento all'elenco di importazioni (se l'elemento è già stato aggiunto, viene ignorato)
+     * @param tokenName 
+     * @param path 
+     */
+    public addImport(tokenName: string, path: string): void{
+        let added = false;
+        if(!!tokenName && tokenName.length > 0 && !!path && path.length > 0){
+            this.arImports.forEach(el => {
+                if(el.sourcePathName == path){
+                    // abbiamo già un import con lo stesso path, ma dobbiamo controllare che lo stesso token non sia già importato
+                    if(!el.tokens.includes(tokenName)){
+                        el.tokens.push(tokenName);
+                        added = true;
+                    }
+                    else{
+                        //token già presente, non faccio niente
+                        added = true;
+                    }
+
+                }
+            })
+            if(!added){
+                this.arImports.push({sourcePathName: path, tokens: [tokenName]})
+            }
+
+        }
+        
     }
 }
 
@@ -176,4 +223,10 @@ export interface ClassGeneratorProperty{
     type: TS_TYPES | string,
     required: boolean;
     private: boolean;
+}
+
+
+export interface ClassGeneratorImport{
+    tokens: string[];
+    sourcePathName: string;
 }

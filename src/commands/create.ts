@@ -7,6 +7,7 @@ import { ERROR_CODES, INDE_TS_TYPES_MAP, INDE_TYPES, mapError, MyError, TS_TYPES
 import * as fs from 'fs/promises'
 import {parseStringPromise} from "xml2js"
 import { ClassGenerator } from '../utils/class-generator.js'
+import { EnumFileGenerator } from '../utils/enum-generator.js'
 
 
 
@@ -210,9 +211,7 @@ function selectComponentsFromList(arComponents: Record<string, any>[], whiteList
 }
 
 function createArTsClassesFromArEntityType(arEntityType: Record<string,any>[]):ClassGenerator[]{
-    // #TODO
-
-    return arEntityType.map(elEntity => createTsFromSingleObj(elEntity));
+    return arEntityType.map(elEntity => createTsClassFromSingleObj(elEntity));
     
 }
 
@@ -220,7 +219,7 @@ function createArTsClassesFromArEntityType(arEntityType: Record<string,any>[]):C
 
 
 
-function createTsFromSingleObj(objEntity: Record<string, any>): ClassGenerator{
+function createTsClassFromSingleObj(objEntity: Record<string, any>): ClassGenerator{
     
     let finalObj: null | ClassGenerator = null;
     
@@ -235,12 +234,15 @@ function createTsFromSingleObj(objEntity: Record<string, any>): ClassGenerator{
         arProperties.forEach(prop => {
     
         const propName = prop.$.Name;
-        const finalType = converToTsType(prop.$.Type);
+        const {finalType, isEnum} = converToTsType(prop.$.Type);
         const required = prop.$.Nullable == "false";
     
     
             if(!! finalObj){
                 finalObj = finalObj.addProperty(propName, finalType, required, false)
+                if(isEnum){
+                    finalObj.addImport(finalType, './Domains.ts');
+                }
             }
         })
     }
@@ -258,10 +260,11 @@ function createTsFromSingleObj(objEntity: Record<string, any>): ClassGenerator{
  * @param indeType tipo proveniente da inde
  * @returns 
  */
-export function converToTsType(indeType: INDE_TYPES | string): TS_TYPES | string{
+export function converToTsType(indeType: INDE_TYPES | string): {finalType: TS_TYPES | string, isEnum: boolean}{
 
     let finalType: TS_TYPES | string | null = null;
    let arTsTypes  = Object.keys(INDE_TS_TYPES_MAP) as TS_TYPES[];
+   let isEnum = false;
    arTsTypes.forEach((key: TS_TYPES, idx, other) => {
     
     if(INDE_TS_TYPES_MAP[key].includes(indeType as INDE_TYPES))
@@ -270,10 +273,10 @@ export function converToTsType(indeType: INDE_TYPES | string): TS_TYPES | string
 
    if(finalType == null){
         // si suppone che il tipo sia un enum, tolgo i punti e prendo solo l'ultima parte
-        const tokens = indeType.split('.');
-        finalType = tokens[tokens.length];
+        finalType = EnumFileGenerator.getTsNameFromIndeName(indeType)
+        isEnum = true;
    }
 
-   return finalType;
+   return {finalType, isEnum};
 }
 

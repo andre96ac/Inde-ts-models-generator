@@ -9,7 +9,7 @@
     "url": "https://github.com/andre96ac/Inde-ts-models-generator.git"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node build/app.js generate -u https://api.gouego.com/$metadata",
     "build": "tsc",
     "start": "node build/app.js generate"
   },
@@ -23,5 +23,5 @@
   "devDependencies": {
     "@types/xml2js": "^0.4.11",
     "@types/yargs": "^17.0.13"
-  }
+  } 
 }

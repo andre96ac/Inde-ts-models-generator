@@ -1,2 +1,10 @@
 - proprietà pubbliche o private
 - inizializzazione proprietà non primitive
+- prefisso specifico per i nomi delle proprietà 
+- sintassi normalizzata nomi classi 
+- prefisso specifico nomi classi
+- normalizza nomi file classi
+- genera metodo return factory
+- genera metodo return classname
+- genera metodo return remoteEntityName
+- 
