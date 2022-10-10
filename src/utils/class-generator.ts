@@ -1,20 +1,19 @@
 import * as fs from 'fs/promises'
 import { EnumSingleGenerator } from './enum-generator.js';
-import { ERROR_CODES, INDE_TS_TYPES_MAP, INDE_TYPES, mapError, TS_TYPES } from './various.js';
+import { ERROR_CODES, INDE_TS_TYPES_MAP, INDE_TYPES, CustomError, TS_TYPES } from './various.js';
 export class ClassGenerator{
 
+    //proprietà della classe
     private arProperties: ClassGeneratorProperty[] = [];
 
+    //nome fornito
     private suppliedName: string = '';
 
+    //flag di inizializzazione proprietà
     private initProperties: boolean;
 
-
+    //array di importazioni da aggiungere
     private arImports: ClassGeneratorImport[] = [];
-
-
-
-
 
 
     /**
@@ -86,11 +85,6 @@ export class ClassGenerator{
 
     }
 
-
-   
-
-
-
     private isUppercase(letter: string): boolean{
         return (letter === letter.toUpperCase());
     }
@@ -111,31 +105,8 @@ export class ClassGenerator{
     }
 
 
-    private getFileContentString(): string{
-        const start = `export class ${this.className}{\n`  
-
-        const end = `}`
-
-        let properties: string = '';
-
-        if(!! this.arProperties && this.arProperties.length > 0){
-            properties = this.arProperties
-            .map((el) => {
-                return  `\t${el.private? 'private' : 'public'} ${el.name}${el.required? '': '?'}: ${el.type}${this.initProperties? this.getInitValueForType(el.type) : ''};\n`
-            })
-            .reduce((el, acc) => acc + el)
-
-        }
-
-        const imports: string = this.arImports.length > 0? this.arImports.map(el => {
-            return  `import { ${el.tokens.map((token, idx) => `${token}, ` ).reduce((stringToken, acc) => (stringToken + acc)).slice(0, -2)} } from '${el.sourcePathName}'\n`
-        })
-        .reduce((el, acc) => el + acc) : '';
-        
 
 
-        return imports + start + properties + end
-    }
 
     public constructor(name: string, initProperties = true){
         this.suppliedName = name;
@@ -167,30 +138,11 @@ export class ClassGenerator{
         return this
     }
 
-
-    
-
-
     /**
-     * Salva la classe nel percorso specificato
-     * @param path 
-     * @returns 
-     */
-    public saveOnFileSystem(path: string): Promise<void>{
-        const fileContent: string = this.getFileContentString();
-
-        const finalPath: string = `${path}${path.endsWith('/')? '' : '/'}${this.fileName}`
-
-        return fs.writeFile(finalPath, fileContent)
-        .catch(err => Promise.reject(mapError(err, ERROR_CODES.ERR_SAVING_MODEL_FILE)))
-    }
-
-
-    /**
-     * Aggiunge un elemento all'elenco di importazioni (se l'elemento è già stato aggiunto, viene ignorato)
-     * @param tokenName 
-     * @param path 
-     */
+    * Aggiunge un elemento all'elenco di importazioni (se l'elemento è già stato aggiunto, viene ignorato)
+    * @param tokenName 
+    * @param path 
+    */
     public addImport(tokenName: string, path: string): void{
         let added = false;
         if(!!tokenName && tokenName.length > 0 && !!path && path.length > 0){
@@ -215,6 +167,53 @@ export class ClassGenerator{
         }
         
     }
+    
+    
+
+    /**
+     * Restituisce il contenuto del file finito sotto forma di stringa
+     * @returns 
+     */
+    public getFileContentString(): string{
+        const start = `export class ${this.className}{\n`  
+
+        const end = `}`
+
+        let properties: string = '';
+
+        if(!! this.arProperties && this.arProperties.length > 0){
+            properties = this.arProperties
+            .map((el) => {
+                return  `\t${el.private? 'private' : 'public'} ${el.name}${el.required? '': '?'}: ${el.type}${this.initProperties? this.getInitValueForType(el.type) : ''};\n`
+            })
+            .reduce((el, acc) => acc + el)
+
+        }
+
+        const imports: string = this.arImports.length > 0? this.arImports.map(el => {
+            return  `import { ${el.tokens.map((token, idx) => `${token}, ` ).reduce((stringToken, acc) => (stringToken + acc)).slice(0, -2)} } from '${el.sourcePathName}'\n`
+        })
+        .reduce((el, acc) => el + acc) : '';
+        
+        return imports + start + properties + end
+    }
+    
+
+    /**
+     * Salva la classe nel percorso specificato
+     * @param path 
+     * @returns 
+     */
+    public saveOnFileSystem(path: string): Promise<void>{
+        const fileContent: string = this.getFileContentString();
+
+        const finalPath: string = `${path}${path.endsWith('/')? '' : '/'}${this.fileName}`
+
+        return fs.writeFile(finalPath, fileContent)
+        .catch(err => Promise.reject(new CustomError(err, ERROR_CODES.ERR_SAVING_MODEL_FILE)))
+    }
+
+
 
 
     /**

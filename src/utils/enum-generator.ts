@@ -1,5 +1,5 @@
 import * as fs from 'fs/promises'
-import { ERROR_CODES, mapError, TS_TYPES } from './various.js';
+import { ERROR_CODES, CustomError, TS_TYPES } from './various.js';
 
 export class EnumListGenerator{
 
@@ -12,6 +12,11 @@ export class EnumListGenerator{
         }
     }
 
+    /**
+     * Aggiunge uno o più enum (se viene passato un array, i nuovi enum verranno aggiunti in fondo)
+     * @param enumToAdd 
+     * @returns 
+     */
     addEnum(enumToAdd: EnumSingleGenerator | (EnumSingleGenerator | undefined)[]): EnumListGenerator{
         if(!! enumToAdd){
             if(enumToAdd instanceof EnumSingleGenerator){
@@ -60,10 +65,10 @@ export class EnumListGenerator{
             }
             path += this.fileName;
             return fs.writeFile(path, this.getFinalStringRepresentation())
-                        .catch(err => Promise.reject(mapError(err, ERROR_CODES.ERR_SAVING_ENUM_FILE)));
+                        .catch(err => Promise.reject(new CustomError(err, ERROR_CODES.ERR_SAVING_ENUM_FILE)));
         }
         else{
-            return Promise.reject(mapError(new Error('Error, unable to save enums, path not supplied'), ERROR_CODES.ERR_SAVING_ENUM_FILE))
+            return Promise.reject(new CustomError('Error, unable to save enums, path not supplied', ERROR_CODES.ERR_SAVING_ENUM_FILE))
         }
     }
 
@@ -76,6 +81,7 @@ export class EnumListGenerator{
 
 
 export class EnumSingleGenerator{
+
     private suppliedName: string = '';
     private arProperties: EnumPropertyDescriptor[] = [];
     private type: TS_TYPES | null;
@@ -86,7 +92,7 @@ export class EnumSingleGenerator{
     * Elimina tutta la parte prima del punto, e mette il nome tutto maiuscolo
     * @param incomingName nome enuma in arrivo da inde
     */
-    static normalizeEnumName(incomingName: string): string{
+    public static normalizeEnumName(incomingName: string): string{
 
         const tokens = incomingName.split('.');
         return tokens[tokens.length - 1]?.toUpperCase();
@@ -98,7 +104,7 @@ export class EnumSingleGenerator{
      * @param incomingName 
      * @returns 
      */
-    static normalizePropertyName(incomingName: string): string{
+    public static normalizePropertyName(incomingName: string): string{
         const _this = this;
         if(!! incomingName && incomingName.length > 0){
 
@@ -151,11 +157,35 @@ export class EnumSingleGenerator{
         }
     }
 
-    getFinalName():string{
+    /**
+     * Restituisce il nome finale dell'enum normalizzato
+     * @returns 
+     */
+    private getFinalEnumName():string{
         return EnumSingleGenerator.normalizeEnumName(this.suppliedName)
     }
 
+    /**
+     * Restituisce la rappresentazione in stringa per il valore passato (la formattazione tiene conto del tipo dell'enum: stringa o number)
+     * @param prop 
+     * @returns 
+     */
+    private getPropFormattedValue(prop: EnumPropertyDescriptor): string | number{
+        switch (this.type){
+            case 'number':
+                return prop.value
+            default:
+                return `"${prop.value}"`
+        }
+        
+    }
 
+
+    /**
+     * 
+     * @param name nome dell'enum
+     * @param type tipo di enum; se viene passato null, si assume tipo stringa
+     */
     constructor(name: string, type: TS_TYPES | null){
         if(!!name && name.length > 0){
             this.suppliedName = name;
@@ -164,17 +194,25 @@ export class EnumSingleGenerator{
         this.type = type;
     }
 
-    addProperty(name: string, value: string | number): void{
+    /**
+     * Aggiunge una proprietà all'enum
+     * @param name 
+     * @param value 
+     */
+    public addProperty(name: string, value: string | number): EnumSingleGenerator{
         if(!!name && !!value){
             name = EnumSingleGenerator.normalizePropertyName(name);
             this.arProperties.push({name, value});
         }
+        return this;
     }
 
-
-
-    getFinalString(): string{
-        const first = `export enum ${this.getFinalName()}{\n\n`
+    /**
+     * Restituisce la stringa finale rappresentante l'enum
+     * @returns 
+     */
+    public getFinalString(): string{
+        const first = `export enum ${this.getFinalEnumName()}{\n\n`
 
         const last = `\n\n}`
 
@@ -188,15 +226,6 @@ export class EnumSingleGenerator{
         return first + properties + last;
     }
 
-    getPropFormattedValue(prop: EnumPropertyDescriptor): string | number{
-        switch (this.type){
-            case 'number':
-                return prop.value
-            default:
-                return `"${prop.value}"`
-        }
-        
-    }
 
 
 }

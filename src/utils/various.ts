@@ -1,3 +1,4 @@
+
 export enum ERROR_CODES{
     ERR_GENERIC = 1,
     ERR_SAVING_MODEL_FILE = 40,
@@ -6,12 +7,6 @@ export enum ERROR_CODES{
     ERR_FETCHING_METADATA_URL = 20,
     ERR_PROCESSING_XML = 30,
     ERR_PARAMETERS = 50
-}
-
-
-export interface MyError{
-    error: Error,
-    code: ERROR_CODES
 }
 
 export type INDE_TYPES = 
@@ -40,9 +35,20 @@ export const INDE_TS_TYPES_MAP: Record<TS_TYPES, INDE_TYPES[]> = {
     Date: ["Edm.Date", "Edm.DateTimeOffset"]
 }
 
+export class CustomError extends Error{
+    readonly errorCode: ERROR_CODES
+    constructor(error: string | Error, code: ERROR_CODES = ERROR_CODES.ERR_GENERIC){
+        if(error instanceof Error){
+            super(error.message);
+            this.stack = error.stack;
+            this.name = error.name;
+            this.errorCode = code;
+        }
+        else{
+            super(error);
+            
+        }
+        this.errorCode = code;
+    }
 
-
-export function mapError(err: Error, errorCode: ERROR_CODES = ERROR_CODES.ERR_GENERIC): MyError{
-    return {error: err, code: errorCode}
 }
-

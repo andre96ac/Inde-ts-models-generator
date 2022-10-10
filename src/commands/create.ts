@@ -3,7 +3,7 @@
 import yargs from 'yargs'
 import {hideBin} from 'yargs/helpers'
 import axios from "axios"
-import { ERROR_CODES, INDE_TS_TYPES_MAP, INDE_TYPES, mapError, MyError, TS_TYPES } from '../utils/various.js'
+import { ERROR_CODES, INDE_TYPES, CustomError, TS_TYPES } from '../utils/various.js'
 import * as fs from 'fs/promises'
 import {parseStringPromise} from "xml2js"
 import { ClassGenerator } from '../utils/class-generator.js'
@@ -13,7 +13,7 @@ import { EnumListGenerator, EnumSingleGenerator } from '../utils/enum-generator.
 
 
 
-
+//#region MAIN
 
 /**
  * Comando principale di creazione
@@ -60,7 +60,6 @@ export function createCommand(): void{
 
 }
 
-
 /**
  * Handler comando di creazione principale
  * @param args 
@@ -75,68 +74,38 @@ function createCommandHandler(args: yargs.ArgumentsCamelCase<{}>){
 
 
     loadMetadata(sourceUrl, sourceFile)
+        //pulizia e conversione in json
         .then(xmlData => getComponentsArrayFromXml(xmlData))
+        //selezione componenti che mi interessano
         .then(componentsArray => filterComponentsFromList(componentsArray, ['compgouego']))
         .then(componentsArray => {
 
 
+            //creazione e salvataggio modelli
             const arTsClasses: ClassGenerator[] = createArTsClassesFromArEntityType(componentsArray[0].EntityType)
             arTsClasses.forEach(el => {el.saveOnFileSystem('tests')})
 
-
+            // creazione e salvataggio enums
             const enumFactory: EnumListGenerator = createTsEnumGeneratorFromArEnumType(componentsArray[0].EnumType)
             enumFactory.saveToFile('tests')
 
-        //    fs.writeFile('tests/new.json', JSON.stringify(componentsArray))
+            // test
+            // fs.writeFile('tests/new.json', JSON.stringify(componentsArray))
             console.log('All done')
         })
-        .catch((err: MyError) => {
-            if(err instanceof Error){
-                console.error('some errors occurred creating files, please read below');
-                console.error('Error: ', err);
-
-            }
-            else{
-                console.error('some errors occurred creating files, please read below');
-                console.error(`ErrorCode: ${err.code}`)
-                console.error(`ErrorMessage: ${err.error}`)
-            }
-        } )
+        .catch(handleError)
    
 
 }
 
+//#endregion MAIN
 
 
 
 
 
 
-
-
-
-/**
- * Carica i metadati dall'url passato
- * @param url Url da cui caricare
- * @returns 
- */
-function loadMetadataFromUrl(url: string): Promise<string>{
-    return axios.get(url)
-    .then(data => Promise.resolve(data.data))
-    .catch(err => Promise.reject(mapError(err, ERROR_CODES.ERR_FETCHING_METADATA_URL)))
-}
-
-
-/**
- * Carica i metadati dal file passato
- * @param filePath percorso file
- * @returns 
- */
-function loadMetadataFromFile(filePath: string): Promise<string>{
-    return fs.readFile(filePath, {encoding: 'utf-8'})
-    .then(data => Promise.resolve(data))
-    .catch(err => Promise.reject(mapError(err, ERROR_CODES.ERR_READING_METADATA_FILE)))
-}
+//#region MODULE EXPORTS
 
 
 /**
@@ -153,7 +122,7 @@ export function loadMetadata(sourceUrl?: string, sourceFile?: string): Promise<s
         return loadMetadataFromFile(sourceFile)
     }
     else{
-        return Promise.reject(mapError(new Error('No such parameters, please supply an url or a file path for metadata infos'), ERROR_CODES.ERR_PARAMETERS))
+        return Promise.reject(new CustomError('No such parameters, please supply an url or a file path for metadata infos', ERROR_CODES.ERR_PARAMETERS))
     }
 }
 
@@ -162,7 +131,7 @@ export function loadMetadata(sourceUrl?: string, sourceFile?: string): Promise<s
  * @param xmlData Stringa contenente i metadati in xml
  * @returns 
  */
-function getComponentsArrayFromXml(xmlData: string): Promise<Record<string, any>[]>{
+export function getComponentsArrayFromXml(xmlData: string): Promise<Record<string, any>[]>{
     return parseStringPromise(xmlData)
     .then(data => {
         //get Edmx OBJ
@@ -199,7 +168,7 @@ function getComponentsArrayFromXml(xmlData: string): Promise<Record<string, any>
             return Promise.reject('no components found in metadata')
         }
     })
-    .catch(err => Promise.reject(mapError(err, ERROR_CODES.ERR_PROCESSING_XML)))
+    .catch(err => Promise.reject(new CustomError(err, ERROR_CODES.ERR_PROCESSING_XML)))
 }
 
 /**
@@ -208,7 +177,7 @@ function getComponentsArrayFromXml(xmlData: string): Promise<Record<string, any>
  * @param arComponents array dei componenti in arrivo da inde (già puliti)
  * @param whiteList array di nomi dei componenti da conservare
  */
-function filterComponentsFromList(arComponents: Record<string, any>[], whiteList?: string[]): Record<string, any>[]{
+export function filterComponentsFromList(arComponents: Record<string, any>[], whiteList?: string[]): Record<string, any>[]{
     if(!whiteList || whiteList.length == 0){
         console.warn('Component whitelist not found, selecting all components')
         return arComponents;
@@ -248,10 +217,36 @@ export function createTsEnumGeneratorFromArEnumType(arEnumType: Record<string, a
 }
 
 
+//#endregion MODULE EXPORTS
 
 
 
 
+
+
+//#region PRIVATES
+
+/**
+ * Carica i metadati dall'url passato
+ * @param url Url da cui caricare
+ * @returns 
+ */
+ function loadMetadataFromUrl(url: string): Promise<string>{
+    return axios.get(url)
+    .then(data => Promise.resolve(data.data))
+    .catch(err => Promise.reject(new CustomError(err, ERROR_CODES.ERR_FETCHING_METADATA_URL)))
+}
+
+/**
+ * Carica i metadati dal file passato
+ * @param filePath percorso file
+ * @returns 
+ */
+function loadMetadataFromFile(filePath: string): Promise<string>{
+    return fs.readFile(filePath, {encoding: 'utf-8'})
+    .then(data => Promise.resolve(data))
+    .catch(err => Promise.reject(new CustomError(err, ERROR_CODES.ERR_READING_METADATA_FILE)))
+}
 
 
 function createSingleTsEnumFromObjEnum(objEnum: Record<string, any>): EnumSingleGenerator | undefined{
@@ -272,10 +267,6 @@ function createSingleTsEnumFromObjEnum(objEnum: Record<string, any>): EnumSingle
         console.warn(`WARNING: Enum ${objEnum?.$?.Name} skipped, name or members not found`)
     }
 }
-
-
-
-
 
 function createTsClassFromSingleObj(objEntity: Record<string, any>): ClassGenerator{
     
@@ -310,8 +301,20 @@ function createTsClassFromSingleObj(objEntity: Record<string, any>): ClassGenera
     return finalObj
 }
 
+function handleError(err: CustomError | Error){
+    if(err instanceof CustomError){
+        console.error('some errors occurred creating files, please read below');
+        console.error(`ErrorCode: ${err.errorCode}`)
+        console.error(`ErrorMessage: ${err.message}`)
+        console.error(`ErrorMessage: ${err.stack}`)
+    }
+    else{
+        console.error('some errors occurred creating files, please read below');
+        console.error('Error: ', err.stack);
 
-
+    }
+}
+//#endregion PRIVATES
 
 
 
