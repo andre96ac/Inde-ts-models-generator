@@ -11,6 +11,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
+            "preLaunchTask": "npm: build",
             "program": "${workspaceFolder}\\src\\app.ts",
             // "args": "generate --url='https://api.gouego.com/$metadata'",
 

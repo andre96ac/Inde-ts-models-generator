@@ -7,7 +7,7 @@ import { ERROR_CODES, INDE_TS_TYPES_MAP, INDE_TYPES, mapError, MyError, TS_TYPES
 import * as fs from 'fs/promises'
 import {parseStringPromise} from "xml2js"
 import { ClassGenerator } from '../utils/class-generator.js'
-import { EnumFileGenerator } from '../utils/enum-generator.js'
+import { EnumListGenerator, EnumSingleGenerator } from '../utils/enum-generator.js'
 
 
 
@@ -76,12 +76,16 @@ function createCommandHandler(args: yargs.ArgumentsCamelCase<{}>){
 
     loadMetadata(sourceUrl, sourceFile)
         .then(xmlData => getComponentsArrayFromXml(xmlData))
-        .then(componentsArray => selectComponentsFromList(componentsArray, ['compgouego']))
+        .then(componentsArray => filterComponentsFromList(componentsArray, ['compgouego']))
         .then(componentsArray => {
 
 
-            let arTsClasses: ClassGenerator[] = createArTsClassesFromArEntityType(componentsArray[0].EntityType)
+            const arTsClasses: ClassGenerator[] = createArTsClassesFromArEntityType(componentsArray[0].EntityType)
             arTsClasses.forEach(el => {el.saveOnFileSystem('tests')})
+
+
+            const enumFactory: EnumListGenerator = createTsEnumGeneratorFromArEnumType(componentsArray[0].EnumType)
+            enumFactory.saveToFile('tests')
 
         //    fs.writeFile('tests/new.json', JSON.stringify(componentsArray))
             console.log('All done')
@@ -101,6 +105,14 @@ function createCommandHandler(args: yargs.ArgumentsCamelCase<{}>){
    
 
 }
+
+
+
+
+
+
+
+
 
 
 /**
@@ -133,7 +145,7 @@ function loadMetadataFromFile(filePath: string): Promise<string>{
  * @param souceFile file da cui caricare l'xml
  * @returns 
  */
-function loadMetadata(sourceUrl?: string, sourceFile?: string): Promise<string>{
+export function loadMetadata(sourceUrl?: string, sourceFile?: string): Promise<string>{
     if(!!sourceUrl && sourceUrl.length > 0){
         return loadMetadataFromUrl(sourceUrl)
     }
@@ -196,7 +208,7 @@ function getComponentsArrayFromXml(xmlData: string): Promise<Record<string, any>
  * @param arComponents array dei componenti in arrivo da inde (già puliti)
  * @param whiteList array di nomi dei componenti da conservare
  */
-function selectComponentsFromList(arComponents: Record<string, any>[], whiteList?: string[]): Record<string, any>[]{
+function filterComponentsFromList(arComponents: Record<string, any>[], whiteList?: string[]): Record<string, any>[]{
     if(!whiteList || whiteList.length == 0){
         console.warn('Component whitelist not found, selecting all components')
         return arComponents;
@@ -210,9 +222,55 @@ function selectComponentsFromList(arComponents: Record<string, any>[], whiteList
     }
 }
 
-function createArTsClassesFromArEntityType(arEntityType: Record<string,any>[]):ClassGenerator[]{
+
+/**
+ * Preso in input l'array entityType, crea e restituisce l'array di classGenerators corrispondente
+ * @param arEntityType 
+ * @returns 
+ */
+export function createArTsClassesFromArEntityType(arEntityType: Record<string,any>[]):ClassGenerator[]{
     return arEntityType.map(elEntity => createTsClassFromSingleObj(elEntity));
     
+}
+
+
+/**
+ * Preso in imput l'array generico EnumType, crea e restituisce il corrispondente enumListGenerator
+ * @param arEnumType 
+ * @returns 
+ */
+export function createTsEnumGeneratorFromArEnumType(arEnumType: Record<string, any>[]):EnumListGenerator{
+
+    const arEnums = arEnumType.map(el => createSingleTsEnumFromObjEnum(el));
+
+    return new EnumListGenerator().addEnum(arEnums)
+
+}
+
+
+
+
+
+
+
+
+function createSingleTsEnumFromObjEnum(objEnum: Record<string, any>): EnumSingleGenerator | undefined{
+    if(!!objEnum && !!objEnum.$ && !!objEnum.Member){
+        const name = objEnum.$.Name;
+        const arValues: Record<string, any>[] = objEnum.Member;
+        const incomingType: INDE_TYPES | null = objEnum.$.UnderlyingType;
+
+
+        const finalTsType: TS_TYPES | null = !!incomingType? ClassGenerator.converToTsType(incomingType).finalType as TS_TYPES : null;
+
+
+        const returnFactory = new EnumSingleGenerator(name, finalTsType);
+        arValues.forEach(elValue => {returnFactory.addProperty(elValue.$?.Name, elValue.$?.Value)})
+        return returnFactory
+    }
+    else{
+        console.warn(`WARNING: Enum ${objEnum?.$?.Name} skipped, name or members not found`)
+    }
 }
 
 
@@ -234,14 +292,14 @@ function createTsClassFromSingleObj(objEntity: Record<string, any>): ClassGenera
         arProperties.forEach(prop => {
     
         const propName = prop.$.Name;
-        const {finalType, isEnum} = converToTsType(prop.$.Type);
+        const {finalType, isEnum} = ClassGenerator.converToTsType(prop.$.Type);
         const required = prop.$.Nullable == "false";
     
     
             if(!! finalObj){
                 finalObj = finalObj.addProperty(propName, finalType, required, false)
                 if(isEnum){
-                    finalObj.addImport(finalType, './Domains.ts');
+                    finalObj.addImport(finalType, './Domains');
                 }
             }
         })
@@ -255,28 +313,5 @@ function createTsClassFromSingleObj(objEntity: Record<string, any>): ClassGenera
 
 
 
-/**
- * converte il tipo proveniente da inde in tipo typescript (se il tipo non è standard, si suppone sia un enum)
- * @param indeType tipo proveniente da inde
- * @returns 
- */
-export function converToTsType(indeType: INDE_TYPES | string): {finalType: TS_TYPES | string, isEnum: boolean}{
 
-    let finalType: TS_TYPES | string | null = null;
-   let arTsTypes  = Object.keys(INDE_TS_TYPES_MAP) as TS_TYPES[];
-   let isEnum = false;
-   arTsTypes.forEach((key: TS_TYPES, idx, other) => {
-    
-    if(INDE_TS_TYPES_MAP[key].includes(indeType as INDE_TYPES))
-        finalType = key;
-   })
-
-   if(finalType == null){
-        // si suppone che il tipo sia un enum, tolgo i punti e prendo solo l'ultima parte
-        finalType = EnumFileGenerator.getTsNameFromIndeName(indeType)
-        isEnum = true;
-   }
-
-   return {finalType, isEnum};
-}
 

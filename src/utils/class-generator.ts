@@ -1,5 +1,6 @@
 import * as fs from 'fs/promises'
-import { ERROR_CODES, mapError, TS_TYPES } from './various.js';
+import { EnumSingleGenerator } from './enum-generator.js';
+import { ERROR_CODES, INDE_TS_TYPES_MAP, INDE_TYPES, mapError, TS_TYPES } from './various.js';
 export class ClassGenerator{
 
     private arProperties: ClassGeneratorProperty[] = [];
@@ -213,6 +214,32 @@ export class ClassGenerator{
 
         }
         
+    }
+
+
+    /**
+    * converte il tipo proveniente da inde in tipo typescript (se il tipo non è standard, si suppone sia un enum)
+    * @param indeType tipo proveniente da inde
+    * @returns 
+    */
+    static converToTsType(indeType: INDE_TYPES | string): {finalType: TS_TYPES | string, isEnum: boolean}{
+
+        let finalType: TS_TYPES | string | null = null;
+        let arTsTypes  = Object.keys(INDE_TS_TYPES_MAP) as TS_TYPES[];
+        let isEnum = false;
+        arTsTypes.forEach((key: TS_TYPES, idx, other) => {
+            
+            if(INDE_TS_TYPES_MAP[key].includes(indeType as INDE_TYPES))
+                finalType = key;
+        })
+
+        if(finalType == null){
+                // si suppone che il tipo sia un enum, tolgo i punti e prendo solo l'ultima parte
+                finalType = EnumSingleGenerator.normalizeEnumName(indeType)
+                isEnum = true;
+        }
+
+        return {finalType, isEnum};
     }
 }
 

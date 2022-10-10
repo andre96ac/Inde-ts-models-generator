@@ -7,4 +7,4 @@
 - genera metodo return factory
 - genera metodo return classname
 - genera metodo return remoteEntityName
-- 
+- aggiungi estensione .js negli imports
