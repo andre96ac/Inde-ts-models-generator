@@ -83,11 +83,11 @@ function createCommandHandler(args: yargs.ArgumentsCamelCase<{}>){
 
             //creazione e salvataggio modelli
             const arTsClasses: ClassGenerator[] = createArTsClassesFromArEntityType(componentsArray[0].EntityType)
-            arTsClasses.forEach(el => {el.saveOnFileSystem('tests')})
+            arTsClasses.forEach(el => {el.saveOnFileSystem('models')})
 
             // creazione e salvataggio enums
             const enumFactory: EnumListGenerator = createTsEnumGeneratorFromArEnumType(componentsArray[0].EnumType)
-            enumFactory.saveToFile('tests')
+            enumFactory.saveToFile('models')
 
             // test
             // fs.writeFile('tests/new.json', JSON.stringify(componentsArray))
