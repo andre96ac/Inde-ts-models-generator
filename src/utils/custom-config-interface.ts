@@ -19,7 +19,7 @@ export interface CustomConfig{
     normalizeClassFilesNames: boolean,
     // set true if you want to add ".js" at the end of generated import paths
     importsPathExtension: boolean,
-    // whitelist of components to use ( [] => only main app, [*] => all, ["comp1", "comp2"] => only specified )
-    componentsWhiteList: string[]
+    // whitelist of components to use ( null => only main app, [*] => all, ["comp1", "comp2"] => only specified )
+    componentsWhiteList: string[] | null
 
 }

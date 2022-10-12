@@ -9,6 +9,6 @@
     "normalizeClassNames": true,
     "normalizeClassFilesNames": true,
     "importsPathExtension": true,
-    "componentsWhiteList": ["compgouego"]
+    "componentsWhiteList": ["*"]
 
 }

@@ -86,22 +86,24 @@ async function createCommandHandler(args: yargs.ArgumentsCamelCase<{}>){
         //pulizia e conversione in json
         .then(xmlData => getComponentsArrayFromXml(xmlData))
         //selezione componenti che mi interessano
-        .then(componentsArray => filterComponentsFromList(componentsArray, ['compgouego']))
+        .then(componentsArray => filterComponentsFromList(componentsArray, ['*']))
         .then(componentsArray => {
+            // test
+            fs.writeFile('tests/new.json', JSON.stringify(componentsArray))
 
 
             //TODO GESTIRE ERRORI
+            //TODO GESTIRE UN COMPONENTSARRAY PIù LUNGO DI 1
             //creazione e salvataggio modelli
             const arTsClasses: ClassGenerator[] = createArTsClassesFromArEntityType(componentsArray[0].EntityType);
             Promise.all(arTsClasses.map(el => {el.saveOnFileSystem('models')}))
 
             //TODO GESTIRE ERRORI
+            //TODO GESTIRE UN COMPONENTSARRAY PIù LUNGO DI 1
             // creazione e salvataggio enums
             const enumFactory: EnumListGenerator = createTsEnumGeneratorFromArEnumType(componentsArray[0].EnumType)
             enumFactory.saveToFile('models')
-
-            // test
-            // fs.writeFile('tests/new.json', JSON.stringify(componentsArray))
+            
         })
         .then(() => {
             
@@ -192,8 +194,11 @@ export function getComponentsArrayFromXml(xmlData: string): Promise<Record<strin
  * @param whiteList array di nomi dei componenti da conservare
  */
 export function filterComponentsFromList(arComponents: Record<string, any>[], whiteList?: string[]): Record<string, any>[]{
-    if(!whiteList || whiteList.length == 0){
-        console.warn('Component whitelist not found, selecting all components')
+    if(!whiteList){
+        console.warn('Component whitelist not found, selecting only app')
+        return arComponents;
+    }
+    else if(whiteList.length == 1 && whiteList[0] == '*'){
         return arComponents;
     }
     else{
@@ -224,7 +229,9 @@ export function createArTsClassesFromArEntityType(arEntityType: Record<string,an
  */
 export function createTsEnumGeneratorFromArEnumType(arEnumType: Record<string, any>[]):EnumListGenerator{
 
-    const arEnums = arEnumType.map(el => createSingleTsEnumFromObjEnum(el));
+
+
+    const arEnums = arEnumType?.map(el => createSingleTsEnumFromObjEnum(el));
 
     return new EnumListGenerator().addEnum(arEnums)
 
