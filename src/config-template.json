@@ -1,0 +1,13 @@
+{
+    "initProperties": true, 
+    "initPropertiesMode": "normal",
+    "getFactoryMethod": true,
+    "getClassNameMethod": true,
+    "getRemoteEntityNameMethod": true,
+    "propertiesAccessibility": "private",
+    "propertiesCustomPrefix": "",
+    "normalizeClassNames": true,
+    "normalizeClassFilesNames": true,
+    "importsPathExtension": true
+
+}

@@ -9,7 +9,7 @@
     "url": "https://github.com/andre96ac/Inde-ts-models-generator.git"
   },
   "scripts": {
-    "test": "node build/app.js generate -u https://api.gouego.com/$metadata",
+    "test": "node build/app.js generate -u https://api.gouego.com/$metadata -c \"C:\\Users\\Andrea Cuppini\\Desktop\\myconfig.json\"",
     "build": "tsc",
     "start": "node build/app.js generate"
   },

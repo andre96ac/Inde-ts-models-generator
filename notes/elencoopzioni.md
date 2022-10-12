@@ -1,10 +1,10 @@
-- proprietà pubbliche o private
-- inizializzazione proprietà non primitive
-- prefisso specifico per i nomi delle proprietà 
-- sintassi normalizzata nomi classi 
-- prefisso specifico nomi classi
-- normalizza nomi file classi
-- genera metodo return factory
-- genera metodo return classname
-- genera metodo return remoteEntityName
-- aggiungi estensione .js negli imports
+- proprietà pubbliche o private X 
+- inizializzazione proprietà non primitive X
+- prefisso specifico per i nomi delle proprietà X
+- sintassi normalizzata nomi classi X
+- prefisso specifico nomi classi X 
+- normalizza nomi file classi X
+- genera metodo return factory X 
+- genera metodo return classname X 
+- genera metodo return remoteEntityName X 
+- aggiungi estensione .js negli imports 

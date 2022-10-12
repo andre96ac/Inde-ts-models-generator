@@ -9,6 +9,10 @@ import {parseStringPromise} from "xml2js"
 import { ClassGenerator } from '../utils/class-generator.js'
 import { EnumListGenerator, EnumSingleGenerator } from '../utils/enum-generator.js'
 
+import { CustomConfig } from '../utils/custom-config-interface.js'
+
+import DEFAULT_CONFIG from '../config-template.json' assert {type: 'json'};
+
 
 
 
@@ -64,16 +68,21 @@ export function createCommand(): void{
  * Handler comando di creazione principale
  * @param args 
  */
-function createCommandHandler(args: yargs.ArgumentsCamelCase<{}>){
+async function createCommandHandler(args: yargs.ArgumentsCamelCase<{}>){
 
     console.log(args)
 
     const sourceUrl: string | null = args['url'] as string;
     const sourceFile:string | null =  args['file'] as string;
+    const configSuppliedUrl: string | null = args['config'] as string;
+
+    const config: CustomConfig = await loadConfig(configSuppliedUrl)
+    console.log(config);
+
+    loadMetadata(sourceUrl, sourceFile)
     
 
 
-    loadMetadata(sourceUrl, sourceFile)
         //pulizia e conversione in json
         .then(xmlData => getComponentsArrayFromXml(xmlData))
         //selezione componenti che mi interessano
@@ -81,16 +90,21 @@ function createCommandHandler(args: yargs.ArgumentsCamelCase<{}>){
         .then(componentsArray => {
 
 
+            //TODO GESTIRE ERRORI
             //creazione e salvataggio modelli
-            const arTsClasses: ClassGenerator[] = createArTsClassesFromArEntityType(componentsArray[0].EntityType)
-            arTsClasses.forEach(el => {el.saveOnFileSystem('models')})
+            const arTsClasses: ClassGenerator[] = createArTsClassesFromArEntityType(componentsArray[0].EntityType);
+            Promise.all(arTsClasses.map(el => {el.saveOnFileSystem('models')}))
 
+            //TODO GESTIRE ERRORI
             // creazione e salvataggio enums
             const enumFactory: EnumListGenerator = createTsEnumGeneratorFromArEnumType(componentsArray[0].EnumType)
             enumFactory.saveToFile('models')
 
             // test
             // fs.writeFile('tests/new.json', JSON.stringify(componentsArray))
+        })
+        .then(() => {
+            
             console.log('All done')
         })
         .catch(handleError)
@@ -313,6 +327,24 @@ function handleError(err: CustomError | Error){
         console.error('Error: ', err.stack);
 
     }
+
+
+
+}
+
+
+function loadConfig(suppliedPath: string | undefined): Promise<CustomConfig>{
+
+
+    const loadTask = !!suppliedPath && suppliedPath.length > 0 ? fs.readFile(suppliedPath, {encoding: 'utf-8'}) : Promise.reject();
+
+    return loadTask 
+            .then(loadedString => Promise.resolve(JSON.parse(loadedString)))
+            .then(loadedObj => Promise.resolve(loadedObj as CustomConfig))
+            .catch(err => Promise.resolve(DEFAULT_CONFIG as CustomConfig))
+
+
+
 }
 //#endregion PRIVATES
 
