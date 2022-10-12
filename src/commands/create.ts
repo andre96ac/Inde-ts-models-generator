@@ -348,10 +348,8 @@ function loadConfig(suppliedPath: string | undefined): Promise<CustomConfig>{
             .then((loadedObj: CustomConfig) => {
                 return Promise.resolve(mergeConfig(DEFAULT_CONFIG, loadedObj))
             })
-            .catch(err => Promise.resolve(DEFAULT_CONFIG))
-
-
-
+            .catch(err => Promise.resolve(mergeConfig(DEFAULT_CONFIG)))
+            
 }
 
 
@@ -361,12 +359,13 @@ function loadConfig(suppliedPath: string | undefined): Promise<CustomConfig>{
  * @param suppliedConfig 
  * @returns 
  */
-function mergeConfig(defaultConfig: CustomConfig, suppliedConfig: CustomConfig):CustomConfig{
+function mergeConfig(defaultConfig: CustomConfig, suppliedConfig?: CustomConfig):CustomConfig{
     if(!suppliedConfig){
         console.log('No config supplied... using default options')
         return defaultConfig;
     }
     else{
+        console.log('Custom config detected!')
         const finalConfig = defaultConfig;
         // return Object.assign(defaultConfig, suppliedConfig)
         const arKeys: (keyof typeof finalConfig)[] = Object.keys(finalConfig) as (keyof CustomConfig)[]
