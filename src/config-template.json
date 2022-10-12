@@ -8,6 +8,7 @@
     "propertiesCustomPrefix": "",
     "normalizeClassNames": true,
     "normalizeClassFilesNames": true,
-    "importsPathExtension": true
+    "importsPathExtension": true,
+    "componentsWhiteList": ["compgouego"]
 
 }

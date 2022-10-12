@@ -11,8 +11,8 @@ import { EnumListGenerator, EnumSingleGenerator } from '../utils/enum-generator.
 
 import { CustomConfig } from '../utils/custom-config-interface.js'
 
-import DEFAULT_CONFIG from '../config-template.json' assert {type: 'json'};
-
+import _DEFAULT_CONFIG from '../config-template.json' assert {type: 'json'};
+const DEFAULT_CONFIG: CustomConfig = _DEFAULT_CONFIG as CustomConfig;
 
 
 
@@ -332,19 +332,53 @@ function handleError(err: CustomError | Error){
 
 }
 
-
+/**
+ * Carica la configurazione fondendo l'oggetto default, con quello caricato dall'eventuale percorso passato
+ * @param suppliedPath 
+ * @returns 
+ */
 function loadConfig(suppliedPath: string | undefined): Promise<CustomConfig>{
+
 
 
     const loadTask = !!suppliedPath && suppliedPath.length > 0 ? fs.readFile(suppliedPath, {encoding: 'utf-8'}) : Promise.reject();
 
     return loadTask 
             .then(loadedString => Promise.resolve(JSON.parse(loadedString)))
-            .then(loadedObj => Promise.resolve(loadedObj as CustomConfig))
-            .catch(err => Promise.resolve(DEFAULT_CONFIG as CustomConfig))
+            .then((loadedObj: CustomConfig) => {
+                return Promise.resolve(mergeConfig(DEFAULT_CONFIG, loadedObj))
+            })
+            .catch(err => Promise.resolve(DEFAULT_CONFIG))
 
 
 
+}
+
+
+/**
+ * Fonde le proprietà tra i due oggetti di configurazione, prendendo quelle del supplied e sostituendone i valori a quelli nel default
+ * @param defaultConfig 
+ * @param suppliedConfig 
+ * @returns 
+ */
+function mergeConfig(defaultConfig: CustomConfig, suppliedConfig: CustomConfig):CustomConfig{
+    if(!suppliedConfig){
+        console.log('No config supplied... using default options')
+        return defaultConfig;
+    }
+    else{
+        const finalConfig = defaultConfig;
+        // return Object.assign(defaultConfig, suppliedConfig)
+        const arKeys: (keyof typeof finalConfig)[] = Object.keys(finalConfig) as (keyof CustomConfig)[]
+        arKeys.forEach(key => {
+            if(suppliedConfig[key] !== undefined){
+         
+                //@ts-ignore
+                finalConfig[key] = suppliedConfig[key]
+            }
+        })
+        return finalConfig;
+    }
 }
 //#endregion PRIVATES
 
