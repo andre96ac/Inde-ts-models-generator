@@ -86,10 +86,12 @@ async function createCommandHandler(args: yargs.ArgumentsCamelCase<{}>){
         //pulizia e conversione in json
         .then(xmlData => getComponentsArrayFromXml(xmlData))
         //selezione componenti che mi interessano
-        .then(componentsArray => filterComponentsFromList(componentsArray, ['*']))
+        .then(componentsArray => filterComponentsFromList(componentsArray, []))
         .then(componentsArray => {
+
+            
             // test
-            fs.writeFile('tests/new.json', JSON.stringify(componentsArray))
+            // fs.writeFile('tests/new.json', JSON.stringify(componentsArray))
 
 
             //TODO GESTIRE ERRORI
@@ -105,8 +107,7 @@ async function createCommandHandler(args: yargs.ArgumentsCamelCase<{}>){
             enumFactory.saveToFile('models')
             
         })
-        .then(() => {
-            
+        .then(() => {            
             console.log('All done')
         })
         .catch(handleError)
@@ -193,10 +194,10 @@ export function getComponentsArrayFromXml(xmlData: string): Promise<Record<strin
  * @param arComponents array dei componenti in arrivo da inde (già puliti)
  * @param whiteList array di nomi dei componenti da conservare
  */
-export function filterComponentsFromList(arComponents: Record<string, any>[], whiteList?: string[]): Record<string, any>[]{
+export function filterComponentsFromList(arComponents: Record<string, any>[], whiteList: string[] | null): Record<string, any>[]{
     if(!whiteList){
         console.warn('Component whitelist not found, selecting only app')
-        return arComponents;
+        return [arComponents[0]];
     }
     else if(whiteList.length == 1 && whiteList[0] == '*'){
         return arComponents;
@@ -385,7 +386,11 @@ function mergeConfig(defaultConfig: CustomConfig, suppliedConfig?: CustomConfig)
         })
         return finalConfig;
     }
+
 }
+
+
+
 //#endregion PRIVATES
 
 
