@@ -9,6 +9,7 @@
     "normalizeClassNames": true,
     "normalizeClassFilesNames": true,
     "importsPathExtension": true,
-    "componentsWhiteList": ["*"]
+    "componentsWhiteList": ["*"],
+    "outDir": "./"
 
 }

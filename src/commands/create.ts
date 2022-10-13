@@ -4,7 +4,8 @@ import yargs from 'yargs'
 import {hideBin} from 'yargs/helpers'
 import axios from "axios"
 import { ERROR_CODES, INDE_TYPES, CustomError, TS_TYPES } from '../utils/various.js'
-import * as fs from 'fs/promises'
+import * as fsPromises from 'fs/promises'
+import * as fs from 'fs'
 import {parseStringPromise} from "xml2js"
 import { ClassGenerator } from '../utils/class-generator.js'
 import { EnumListGenerator, EnumSingleGenerator } from '../utils/enum-generator.js'
@@ -86,25 +87,17 @@ async function createCommandHandler(args: yargs.ArgumentsCamelCase<{}>){
         //pulizia e conversione in json
         .then(xmlData => getComponentsArrayFromXml(xmlData))
         //selezione componenti che mi interessano
-        .then(componentsArray => filterComponentsFromList(componentsArray, []))
+        .then(componentsArray => filterComponentsFromList(componentsArray, config.componentsWhiteList))
         .then(componentsArray => {
 
             
             // test
             // fs.writeFile('tests/new.json', JSON.stringify(componentsArray))
 
+            return Promise.all(componentsArray.map(el => processComponent(el, config)))
 
-            //TODO GESTIRE ERRORI
-            //TODO GESTIRE UN COMPONENTSARRAY PIù LUNGO DI 1
-            //creazione e salvataggio modelli
-            const arTsClasses: ClassGenerator[] = createArTsClassesFromArEntityType(componentsArray[0].EntityType);
-            Promise.all(arTsClasses.map(el => {el.saveOnFileSystem('models')}))
 
-            //TODO GESTIRE ERRORI
-            //TODO GESTIRE UN COMPONENTSARRAY PIù LUNGO DI 1
-            // creazione e salvataggio enums
-            const enumFactory: EnumListGenerator = createTsEnumGeneratorFromArEnumType(componentsArray[0].EnumType)
-            enumFactory.saveToFile('models')
+           
             
         })
         .then(() => {            
@@ -217,8 +210,8 @@ export function filterComponentsFromList(arComponents: Record<string, any>[], wh
  * @param arEntityType 
  * @returns 
  */
-export function createArTsClassesFromArEntityType(arEntityType: Record<string,any>[]):ClassGenerator[]{
-    return arEntityType.map(elEntity => createTsClassFromSingleObj(elEntity));
+export function createArTsClassesFromArEntityType(arEntityType: Record<string,any>[], config: CustomConfig):ClassGenerator[]{
+    return arEntityType.map(elEntity => createTsClassFromSingleObj(elEntity, config));
     
 }
 
@@ -228,11 +221,11 @@ export function createArTsClassesFromArEntityType(arEntityType: Record<string,an
  * @param arEnumType 
  * @returns 
  */
-export function createTsEnumGeneratorFromArEnumType(arEnumType: Record<string, any>[]):EnumListGenerator{
+export function createTsEnumGeneratorFromArEnumType(arEnumType: Record<string, any>[], config: CustomConfig):EnumListGenerator{
 
 
 
-    const arEnums = arEnumType?.map(el => createSingleTsEnumFromObjEnum(el));
+    const arEnums = arEnumType?.map(el => createSingleTsEnumFromObjEnum(el, config));
 
     return new EnumListGenerator().addEnum(arEnums)
 
@@ -265,13 +258,13 @@ export function createTsEnumGeneratorFromArEnumType(arEnumType: Record<string, a
  * @returns 
  */
 function loadMetadataFromFile(filePath: string): Promise<string>{
-    return fs.readFile(filePath, {encoding: 'utf-8'})
+    return fsPromises.readFile(filePath, {encoding: 'utf-8'})
     .then(data => Promise.resolve(data))
     .catch(err => Promise.reject(new CustomError(err, ERROR_CODES.ERR_READING_METADATA_FILE)))
 }
 
 
-function createSingleTsEnumFromObjEnum(objEnum: Record<string, any>): EnumSingleGenerator | undefined{
+function createSingleTsEnumFromObjEnum(objEnum: Record<string, any>, config: CustomConfig): EnumSingleGenerator | undefined{
     if(!!objEnum && !!objEnum.$ && !!objEnum.Member){
         const name = objEnum.$.Name;
         const arValues: Record<string, any>[] = objEnum.Member;
@@ -281,7 +274,7 @@ function createSingleTsEnumFromObjEnum(objEnum: Record<string, any>): EnumSingle
         const finalTsType: TS_TYPES | null = !!incomingType? ClassGenerator.converToTsType(incomingType).finalType as TS_TYPES : null;
 
 
-        const returnFactory = new EnumSingleGenerator(name, finalTsType);
+        const returnFactory = new EnumSingleGenerator(name, finalTsType, config);
         arValues.forEach(elValue => {returnFactory.addProperty(elValue.$?.Name, elValue.$?.Value)})
         return returnFactory
     }
@@ -290,29 +283,29 @@ function createSingleTsEnumFromObjEnum(objEnum: Record<string, any>): EnumSingle
     }
 }
 
-function createTsClassFromSingleObj(objEntity: Record<string, any>): ClassGenerator{
+function createTsClassFromSingleObj(objEntity: Record<string, any>, config: CustomConfig): ClassGenerator{
     
     let finalObj: null | ClassGenerator = null;
     
     const name = objEntity.$.Name;
 
 
-    finalObj = new ClassGenerator(name);
+    finalObj = new ClassGenerator(name, config);
     const arProperties:Record<string, any>[] = objEntity.Property;
 
     if(!!arProperties && arProperties.length > 0){
 
         arProperties.forEach(prop => {
     
-        const propName = prop.$.Name;
+        const propName = config.propertiesCustomPrefix + prop.$.Name;
         const {finalType, isEnum} = ClassGenerator.converToTsType(prop.$.Type);
         const required = prop.$.Nullable == "false";
     
     
             if(!! finalObj){
-                finalObj = finalObj.addProperty(propName, finalType, required, false)
+                finalObj = finalObj.addProperty(propName, finalType, required, config.propertiesAccessibility)
                 if(isEnum){
-                    finalObj.addImport(finalType, './Domains');
+                    finalObj.addImport(finalType, `./Domains${config.importsPathExtension? '.js' : ''}`);
                 }
             }
         })
@@ -349,7 +342,7 @@ function loadConfig(suppliedPath: string | undefined): Promise<CustomConfig>{
 
 
 
-    const loadTask = !!suppliedPath && suppliedPath.length > 0 ? fs.readFile(suppliedPath, {encoding: 'utf-8'}) : Promise.reject();
+    const loadTask = !!suppliedPath && suppliedPath.length > 0 ? fsPromises.readFile(suppliedPath, {encoding: 'utf-8'}) : Promise.reject();
 
     return loadTask 
             .then(loadedString => Promise.resolve(JSON.parse(loadedString)))
@@ -389,8 +382,73 @@ function mergeConfig(defaultConfig: CustomConfig, suppliedConfig?: CustomConfig)
 
 }
 
+/**
+ * Processa il componente e crea effettivamente gli modelli ed enum
+ * @param component 
+ * @param config 
+ * @returns 
+ */
+function processComponent(component: Record<string, any>, config: CustomConfig): Promise<void>{
+
+            const compName: string = !!component?.EntityContainer[0]?.$?.Name? component?.EntityContainer[0]?.$?.Name : 'null';
+            const baseFolderName: string = 'models';
+            const basePath: string = !!config?.outDir? config.outDir : './'
 
 
+
+            const finalPath: string = `${basePath}${basePath.endsWith('/')? '' : '/'}${baseFolderName}/${compName}/`
+
+            // Il percorso non esiste, non posso salvare
+            if(!fs.existsSync(basePath)){
+                return Promise.reject(new CustomError(`Unable to save ${compName} files; base path supplied (${basePath}) not found`))
+            }
+
+            if(!fs.existsSync(basePath + (basePath.endsWith('/')? '' : '/') + baseFolderName)){
+                // primo componente che faccio; creo la cartella generica
+                fs.mkdirSync(basePath + (basePath.endsWith('/')? '' : '/') + baseFolderName)
+            }
+
+            //ora creo la cartella componente
+            if(!fs.existsSync(finalPath)){
+                fs.mkdirSync(finalPath);
+            }
+
+            //partiamo
+
+            //creazione modelli
+            const arTsClasses: ClassGenerator[] = createArTsClassesFromArEntityType(component.EntityType, config);
+            // creazione enums
+            const enumFactory: EnumListGenerator = createTsEnumGeneratorFromArEnumType(component.EnumType, config);
+
+
+            // salvataggio modelli
+            const promiseModels: Promise<void> = Promise.all(arTsClasses.map(el => {el.saveOnFileSystem(finalPath).catch((err: CustomError) => {
+                console.warn(`WARNING: Unable to save ${el. fileName}, in component ${compName}; model skipped`)
+
+                // TODO verbse mode
+                // console.warn('Error Code: ', err.errorCode);
+                // console.warn('Error message: ', err.message);
+
+                return Promise.resolve();
+            })}))
+            .then(() => Promise.resolve())
+
+            // salvataggio enums
+            const promiseEnum: Promise<void> = enumFactory.saveToFile(finalPath).catch((err: CustomError) => {
+                console.warn(`WARNING: Unable to save enums file, in component ${compName}; enums skipped`);
+
+                // TODO verbse mode
+                // console.warn('Error Code: ', err.errorCode);
+                //  console.warn('Error message: ', err.message);
+                return Promise.resolve();
+
+            })
+
+            return Promise.all([promiseModels, promiseEnum]).then(() => Promise.resolve())
+            
+            
+
+}
 //#endregion PRIVATES
 
 

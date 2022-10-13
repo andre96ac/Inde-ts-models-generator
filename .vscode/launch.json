@@ -17,7 +17,8 @@
 
             "args": [
                 "generate",
-                "--\--url\=='https://api.gouego.com/$metadata'"
+                "--\--url\=='https://api.gouego.com/$metadata'",
+                "--\--config\=='C:\\Users\\Andrea Cuppini\\Desktop\\myconfig.json'"
             ],
             "outFiles": [
                 "${workspaceFolder}/**/*.js"

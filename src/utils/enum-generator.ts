@@ -1,4 +1,5 @@
 import * as fs from 'fs/promises'
+import { CustomConfig } from './custom-config-interface.js';
 import { ERROR_CODES, CustomError, TS_TYPES } from './various.js';
 
 export class EnumListGenerator{
@@ -186,7 +187,7 @@ export class EnumSingleGenerator{
      * @param name nome dell'enum
      * @param type tipo di enum; se viene passato null, si assume tipo stringa
      */
-    constructor(name: string, type: TS_TYPES | null){
+    constructor(name: string, type: TS_TYPES | null, params: CustomConfig){
         if(!!name && name.length > 0){
             this.suppliedName = name;
         }

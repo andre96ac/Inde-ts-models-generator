@@ -1,6 +1,7 @@
 import * as fs from 'fs/promises'
+import { CustomConfig } from './custom-config-interface.js';
 import { EnumSingleGenerator } from './enum-generator.js';
-import { ERROR_CODES, INDE_TS_TYPES_MAP, INDE_TYPES, CustomError, TS_TYPES } from './various.js';
+import { ERROR_CODES, INDE_TS_TYPES_MAP, INDE_TYPES, CustomError, TS_TYPES, PROP_ACCESSIBILTY } from './various.js';
 export class ClassGenerator{
 
     //proprietà della classe
@@ -9,8 +10,9 @@ export class ClassGenerator{
     //nome fornito
     private suppliedName: string = '';
 
-    //flag di inizializzazione proprietà
-    private initProperties: boolean;
+    //parametri di configurazione
+    private params: CustomConfig;
+
 
     //array di importazioni da aggiungere
     private arImports: ClassGeneratorImport[] = [];
@@ -26,28 +28,35 @@ export class ClassGenerator{
      * pippoPluto => PippoPluto
      * 
      */
-    private get className(): string{
+    public get className(): string{
+        if(!this.params.normalizeClassNames){
+            return this.suppliedName;
 
-        let isCamelCase = false;
-        const strLength = this.suppliedName.length;
-        let finalString = this.suppliedName;
-
-        for(let i = 1; i< strLength-1; i++){
-            if(this.isUppercase(this.suppliedName[i]) && !this.isUppercase(this.suppliedName[i-1]) && !this.isUppercase(this.suppliedName[i+1])){
-                //abbiamo una maiuscola isolata, 
-                isCamelCase = true
-            }
-        }
-
-        if(!isCamelCase){
-            //non ci sono maiuscole da salvare, metto tutto in minuscolo 
-            finalString = finalString.charAt(0).toUpperCase() + finalString.substring(1).toLowerCase();
         }
         else{
-            finalString = finalString.charAt(0).toUpperCase() + finalString.substring(1);
+
+            let isCamelCase = false;
+            const strLength = this.suppliedName.length;
+            let finalString = this.suppliedName;
+    
+            for(let i = 1; i< strLength-1; i++){
+                if(this.isUppercase(this.suppliedName[i]) && !this.isUppercase(this.suppliedName[i-1]) && !this.isUppercase(this.suppliedName[i+1])){
+                    //abbiamo una maiuscola isolata, 
+                    isCamelCase = true
+                }
+            }
+    
+            if(!isCamelCase){
+                //non ci sono maiuscole da salvare, metto tutto in minuscolo 
+                finalString = finalString.charAt(0).toUpperCase() + finalString.substring(1).toLowerCase();
+            }
+            else{
+                finalString = finalString.charAt(0).toUpperCase() + finalString.substring(1);
+            }
+    
+            return finalString;
         }
 
-        return finalString;
 
     }
 
@@ -61,26 +70,33 @@ export class ClassGenerator{
      * pippopluto => pippopluto.model.ts
      * pippoPluto => pippo-pluto.model.ts
      */
-    private get fileName(): string{
+    public get fileName(): string{
 
-        let isCamelCase = false;
-        const strLength = this.suppliedName.length;
-        let finalString = this.suppliedName;
+        if(!this.params.normalizeClassFilesNames){
+            return `${this.suppliedName}.ts`
+        }
+        else{
 
-        let j = 1;
-        for(let i = j; i< strLength-1; i++){
-            if(this.isUppercase(this.suppliedName[i]) && !this.isUppercase(this.suppliedName[i-1]) && !this.isUppercase(this.suppliedName[i+1])){
-                //abbiamo una maiuscola isolata, 
-                isCamelCase = true
-
-                finalString =`${finalString.substring(0, j)}-${finalString.substring(j)}`
+            let isCamelCase = false;
+            const strLength = this.suppliedName.length;
+            let finalString = this.suppliedName;
+    
+            let j = 1;
+            for(let i = j; i< strLength-1; i++){
+                if(this.isUppercase(this.suppliedName[i]) && !this.isUppercase(this.suppliedName[i-1]) && !this.isUppercase(this.suppliedName[i+1])){
+                    //abbiamo una maiuscola isolata, 
+                    isCamelCase = true
+    
+                    finalString =`${finalString.substring(0, j)}-${finalString.substring(j)}`
+                    j++;
+                }
                 j++;
             }
-            j++;
+    
+    
+            return `${finalString.toLowerCase()}.model.ts`;
         }
 
-
-        return `${finalString.toLowerCase()}.model.ts`;
 
 
     }
@@ -108,26 +124,26 @@ export class ClassGenerator{
 
 
 
-    public constructor(name: string, initProperties = true){
+    public constructor(name: string, config: CustomConfig){
         this.suppliedName = name;
-        this.initProperties = initProperties;
+        this.params = config;;
     }
 
 
-    public addPrimaryKey(name: string, type: TS_TYPES, required = false, privateField = false): ClassGenerator{
+    public addPrimaryKey(name: string, type: TS_TYPES, required = false, privateField: PROP_ACCESSIBILTY = 'public'): ClassGenerator{
         this.addProperty(name, type, required, privateField)
         return this;
     }
 
 
     
-    public addProperty(name: string, type: TS_TYPES | string, required = false, privateField = false): ClassGenerator{
+    public addProperty(name: string, type: TS_TYPES | string, required = false, accessibility: PROP_ACCESSIBILTY = 'public'): ClassGenerator{
         if(!!name && name.length > 0 && !!type && type.length > 0 && required !== null && required !== undefined){
             this.arProperties.push({
-                name: name,
-                type: type,
-                required: required,
-                private: privateField
+                name,
+                type,
+                required,
+                accessibility
             })
 
         }
@@ -176,27 +192,115 @@ export class ClassGenerator{
      */
     public getFileContentString(): string{
         const start = `export class ${this.className}{\n`  
-
         const end = `}`
+        const properties = this.getPropertiesString();
+        const imports = this.getImportsString();
+        const constructor = this.getConstructor();
+        const initMethod = this.getInitMethod();
+        const factoryMethod = this.getFactoryMethod();
+        const classNameMethod = this.getClassNameMethod();
+        const remoteNameMethod = this.getRemoteNameMehtod();
+        
+        return imports + start + properties + constructor + initMethod + factoryMethod + classNameMethod + remoteNameMethod + end
+    }
 
+
+    private getPropertiesString(): string{
         let properties: string = '';
 
         if(!! this.arProperties && this.arProperties.length > 0){
             properties = this.arProperties
             .map((el) => {
-                return  `\t${el.private? 'private' : 'public'} ${el.name}${el.required? '': '?'}: ${el.type}${this.initProperties? this.getInitValueForType(el.type) : ''};\n`
+                return  `\t${el.accessibility} ${el.name}${el.required? '': '?'}: ${el.type}${(this.params.initProperties && this.params.initPropertiesMode == 'normal')? this.getInitValueForType(el.type) : ''};\n`
             })
             .reduce((el, acc) => acc + el)
 
+            properties += '\n'
+            properties += '\n'
+
+        }
+        return properties;
+    }
+
+
+    private getImportsString(): string{
+        return this.arImports.length > 0? this.arImports
+                                                    .map(el => {
+                                                        return  `import { ${el.tokens.map((token, idx) => `${token}, ` ).reduce((stringToken, acc) => (stringToken + acc)).slice(0, -2)} } from '${el.sourcePathName}'\n`
+                                                    })
+                                                    .reduce((el, acc) => el + acc)
+                                                    .concat('\n\n') : '';
+    }
+
+    private getConstructor(): string{
+        let finalString = '';
+
+        if(this.params.initProperties && this.params.initPropertiesMode == 'constructor'){
+            const start = `\tconstructor() {\n`
+            const end = `\t}`
+
+            const properties: string = this.arProperties.length > 0? this.arProperties
+                                                .map(elProp => `\t\tthis.${elProp.name} ${this.getInitValueForType(elProp.type)};\n`)
+                                                .reduce((el, acc) => acc+el) : ''
+
+            finalString = start + properties + end + '\n' + '\n'
         }
 
-        const imports: string = this.arImports.length > 0? this.arImports.map(el => {
-            return  `import { ${el.tokens.map((token, idx) => `${token}, ` ).reduce((stringToken, acc) => (stringToken + acc)).slice(0, -2)} } from '${el.sourcePathName}'\n`
-        })
-        .reduce((el, acc) => el + acc) : '';
-        
-        return imports + start + properties + end
+        return finalString;
     }
+    private getInitMethod(): string{
+        let finalString = '';
+
+        if(this.params.initProperties && this.params.initPropertiesMode == 'initMethod'){
+            const start = `\tinit() {\n`
+            const end = `\t}`
+
+            const properties: string = this.arProperties.length > 0? this.arProperties
+                                                .map(elProp => `\t\tthis.${elProp.name} ${this.getInitValueForType(elProp.type)};\n`)
+                                                .reduce((el, acc) => acc+el): ''
+
+            finalString = start + properties + end + "\n" + "\n"
+        }
+
+        return finalString;
+    }
+
+    private getFactoryMethod(): string{
+        if(this.params.getFactoryMethod){
+
+            return `\tgetFactory(): typeof ${this.className}{
+        return ${this.className}
+    }\n\n`
+        }
+        else {
+            return '';
+        }
+    }
+    private getClassNameMethod(): string{
+        if(this.params.getFactoryMethod){
+
+            return `\tgetClassName(): string{
+        return '${this.className}'
+    }\n\n`
+        }
+        else {
+            return '';
+        }
+    }
+
+    private getRemoteNameMehtod(): string{
+        if(this.params.getFactoryMethod){
+
+            return `\tgetRemoteName(): string{
+        return '${this.suppliedName}'
+    }\n\m`
+        }
+        else {
+            return '';
+        }
+    }
+
+
     
 
     /**
@@ -248,7 +352,7 @@ export interface ClassGeneratorProperty{
     name: string,
     type: TS_TYPES | string,
     required: boolean;
-    private: boolean;
+    accessibility: PROP_ACCESSIBILTY;
 }
 
 

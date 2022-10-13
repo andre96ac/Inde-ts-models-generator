@@ -52,3 +52,5 @@ export class CustomError extends Error{
     }
 
 }
+
+export type PROP_ACCESSIBILTY = 'public'|'private'|'protected'
