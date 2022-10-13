@@ -94,7 +94,7 @@ Here you can see the expected config file structure:
         //Set true if you want all the non primitive properties initialized
         initProperties: boolean;
         //set if you want the properties inizialized at declaration, inside the constructor, or in a specific method ("initProperties" must be true)
-        initPropertiesMode: 'normal' | 'constructor' | 'initMethod'; //X
+        initPropertiesMode: 'normal' | 'constructor' | 'initMethod';
         //set true if you want to generatye a getFactory method which returns the prototype of the class 
         getFactoryMethod: boolean;
         //set true if you want to generatye a getClassName method which returns the name of the class

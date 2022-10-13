@@ -16,8 +16,11 @@ export type INDE_TYPES =
 "Edm.DateTimeOffset" |//
 "Edm.Decimal"   |//
 "Edm.Binary"    |//
+"Edm.TimeOfDay"    |//
+"Edm.Double"    |//
+"Edm.Int16"     |//
 "Edm.Int32"     |//
-"Edm.Int16"     ;//
+"Edm.Int64"     ;//
 
 
 export type TS_TYPES = 
@@ -30,9 +33,9 @@ export type TS_TYPES =
 
 export const INDE_TS_TYPES_MAP: Record<TS_TYPES, INDE_TYPES[]> = {
     string: ["Edm.String", "Edm.Guid"],
-    number: ["Edm.Decimal", "Edm.Int16", "Edm.Int32"],
+    number: ["Edm.Decimal", "Edm.Int16", "Edm.Int32", "Edm.Int64", "Edm.Double"],
     boolean: ["Edm.Binary"],
-    Date: ["Edm.Date", "Edm.DateTimeOffset"]
+    Date: ["Edm.Date", "Edm.DateTimeOffset", "Edm.TimeOfDay"]
 }
 
 export class CustomError extends Error{
