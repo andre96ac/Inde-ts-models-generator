@@ -1,6 +1,6 @@
 {
   "name": "inde-ts-models-generator",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "script used to generate *.model.ts class files starting from instant developer $metadata xml descriptor",
   "main": "app.js",
   "type": "module",
