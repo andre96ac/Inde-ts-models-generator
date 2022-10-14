@@ -1,6 +1,6 @@
 {
   "name": "inde-ts-models-generator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "script used to generate *.model.ts class files starting from instant developer $metadata xml descriptor",
   "main": "build/app.js",
   "type": "module",
@@ -14,7 +14,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "node build/commandList.js generate "
+    "start": "node build/commandList.js generate"
   },
   "author": "Andrea Cuppini",
   "license": "ISC",
