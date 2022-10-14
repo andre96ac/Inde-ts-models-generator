@@ -7,10 +7,21 @@
 <br>
 
 # Inde-ts-models-generator
+Single-command script to generate angular-style model files (*.model.ts) starting from Instant developer api $metadata descriptor
+
+<br>
+
+
+- [Inde-ts-models-generator](#inde-ts-models-generator)
+  - [Installation](#installation)
+  - [Usage](#usage)
+    - [Single command usage](#single-command-usage)
+    - [Code usage](#code-usage)
+    - [Configuration](#configuration)
+        - [NOTE: In any case, remember that the options provided via command line will take precedence over those in the configuration file](#note-in-any-case-remember-that-the-options-provided-via-command-line-will-take-precedence-over-those-in-the-configuration-file)
 
 
 
-Single-command script to generate angular-style classes (*.model.ts) starting from Instant developer api $metadata descriptor
 
 <br>
 <br>
@@ -18,13 +29,13 @@ Single-command script to generate angular-style classes (*.model.ts) starting fr
 ## Installation
 <hr>
 
-If you want to use function directly in your code, you can install the package locally
+If you want to use the functions  in your code, you can install the package locally
 
 ```bash
     npm i --save inde-ts-models-generator 
 ```
 
-If you want to use it direcly from terminal, install it globally istead
+If you want to use the script direcly from terminal, install it globally istead
 
 ```bash
     npm i -g inde-ts-models-generator
@@ -43,7 +54,7 @@ If you want to use it direcly from terminal, install it globally istead
 ### Single command usage
 to generate files, simply run 
 ```bash
-    inde-ts-models generate -u https://my-application.aspx/$metadata
+    inde-ts-models generate -u https://my-application.aspx/$metadata 
 ```
 where "-u" option is the url of your Instant Developer application where $metadata informations are exposed.
 
@@ -73,18 +84,115 @@ Optionally, you can provide a configuration file path, where you can specify mor
 
 ### Code usage
 
-> Coming Soon 
+If you want, it is possible to use the prebuild functions to generate models programmatically
+
+```typescript
+import * as IndeGenerator from 'inde-ts-models-generator'
+
+async function main(){
+
+    //this follow the pattern of the config json file
+    const CONFIG: IndeGenerator.CustomConfigInterface.CustomConfig = {
+        initProperties: true,
+        initPropertiesMode: "normal",
+        getFactoryMethod: true,
+        getClassNameMethod: true,
+        getRemoteEntityNameMethod: true,
+        propertiesAccessibility: "private",
+        propertiesCustomPrefix: "",
+        normalizeClassNames: true,
+        normalizeClassFilesNames: true,
+        importsPathExtension: true,
+        componentsWhiteList: ['compgouego'],
+        outDir: "./"
+    }
+
+
+    //Get the xml metadata
+    const xmlMetadata: string = await IndeGenerator.loadMetadata('https://api.xxxx.com/$metadata')
+
+    //Convert in JSON and clean, obtaining an array representing Instant Developer Project Components
+    const arIndeComponents: Record<string, any>[] = await IndeGenerator.getComponentsArrayFromXml(xmlMetadata)
+
+    //OPTIONALLY you can filter picking only components included in the filter array (this follow the config file sintax) 
+    const filteredComponents: Record<string, any>[] = IndeGenerator.filterComponentsFromList(arIndeComponents, CONFIG.componentsWhiteList)
+
+    //Getting Model Generator Objects; You have to make this for all components in "filteredComponents" Array
+    const arTsClassesGenerators: IndeGenerator.ClassGenerator.ClassGenerator[] = IndeGenerator.createArTsClassesFromArEntityType(filteredComponents[0].EntityType, CONFIG)
+    
+    //Getting Enum Generator Object; You have to make this for all components in "filteredComponents" Array
+    const enumGenerator: IndeGenerator.EnumGenerator.EnumListGenerator = IndeGenerator.createTsEnumGeneratorFromArEnumType(filteredComponents[0].EnumType, CONFIG)
+
+
+    //Now you can get the result string representation
+    const finalModelStrings: string [] = arTsClassesGenerators.map(el => el.getFileContentString())
+    const finalEnumsString: string = await enumGenerator.getFinalStringRepresentation('');
+
+
+    //...Or save them directly to files
+    const PATH = './'
+    Promise.all(arTsClassesGenerators.map(el => el.saveOnFileSystem(PATH)))
+    .then(() => {console.log('Model files correctly created')})
+
+
+    enumGenerator.saveToFile(PATH)
+    .then(() => {console.log('Enum file correctly created')})
+
+}
+
+
+main()
+
+```
 
 
 
 <br>
 
+It is also possible to use the ```IndeGenerator.ClassGenerator.ClassGenerator``` to generate arbitrary ts class files 
+
+```typescript
+   async function createArbitraryClass() {
+    //Create the object
+    const classFactory = new IndeGenerator.ClassGenerator.ClassGenerator('ClassName', {
+        initProperties: true,
+        initPropertiesMode: "normal",
+        getFactoryMethod: true,
+        getClassNameMethod: true,
+        getRemoteEntityNameMethod: true,
+        propertiesAccessibility: "private",
+        propertiesCustomPrefix: "",
+        normalizeClassNames: true,
+        normalizeClassFilesNames: true,
+        importsPathExtension: true,
+        componentsWhiteList: [], //  not used
+        outDir: "./" // not used
+    })
+
+
+    //add properties
+    classFactory.addProperty('propName', 'string', true, "private");
+
+    // add imports
+    classFactory.addImport('MY_ENUM', './my-enum.js')
+
+    
+    // get data string
+    classFactory.getFileContentString();
+    //save to file
+    await classFactory.saveOnFileSystem('./path');
+}
+
+
+
+```
+
 
 ### Configuration
 
-Optionally, with "-c" option, you can provide a configuration file in json format, which allow you to customize the script behavior. 
+Optionally, when executing the script from the CLI, with "-c" option you can provide a configuration file in json format, which allow you to customize the script behavior. 
 
-##### In any case, remember that the options provided via command line will take precedence over those in the configuration file
+##### NOTE: In any case, remember that the options provided via command line will take precedence over those in the configuration file
 
 
 Here you can see the expected config file structure:
@@ -118,7 +226,7 @@ Here you can see the expected config file structure:
     }   
 ```
 
- and this is an example containing the default data
+ and this is an example containing the default config. You can supply all, or only some properties; the others will get values below:
 ```json
 {
     "initProperties": true, 

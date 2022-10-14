@@ -2,8 +2,12 @@
   "name": "inde-ts-models-generator",
   "version": "1.0.0",
   "description": "script used to generate *.model.ts class files starting from instant developer $metadata xml descriptor",
-  "main": "app.js",
+  "main": "build/app.js",
   "type": "module",
+  "typings": "build/app",
+  "bin": {
+    "inde-ts-models": "build/app.js"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/andre96ac/Inde-ts-models-generator.git"
@@ -19,9 +23,6 @@
     "axios": "^0.27.2",
     "xml2js": "^0.4.23",
     "yargs": "^17.5.1"
-  },
-  "bin": {
-    "inde-ts-models": "build/app.js"
   },
   "devDependencies": {
     "@types/xml2js": "^0.4.11",

@@ -40,16 +40,15 @@ export class EnumListGenerator{
      * Ottiene la stringa finale con tutti i dati che verranno salvati sul file
      * @returns 
      */
-    getFinalStringRepresentation(): string{
+    getFinalStringRepresentation(filePath?: string): Promise<string>{
         if(!!this.arEnums && this.arEnums.length > 0){
-            return this.arEnums
+            return Promise.resolve(this.arEnums
                             .map(el => `${el.getFinalString()}\n\n\n`)
-                            .reduce((el, acc) => el + acc);
+                            .reduce((el, acc) => el + acc));
 
         }
         else{
-            console.warn('WARNING: unable to get enum string representation; arEnums is undefined')
-            return ''
+            return Promise.reject(new CustomError(`WARNING: unable to get enum string representation; arEnums is undefined, unable to save ${filePath}`, ERROR_CODES.ERR_SAVING_ENUM_FILE))
         }
     }
 
@@ -65,8 +64,10 @@ export class EnumListGenerator{
                 path += '/'
             }
             path += this.fileName;
-            return fs.writeFile(path, this.getFinalStringRepresentation())
-                        .catch(err => Promise.reject(new CustomError(err, ERROR_CODES.ERR_SAVING_ENUM_FILE)));
+            return this.getFinalStringRepresentation(path).then(data => {
+                return fs.writeFile(path, data)   
+                .catch(err => Promise.reject(new CustomError(err, ERROR_CODES.ERR_SAVING_ENUM_FILE)));
+            }) 
         }
         else{
             return Promise.reject(new CustomError('Error, unable to save enums, path not supplied', ERROR_CODES.ERR_SAVING_ENUM_FILE))

@@ -436,7 +436,7 @@ function processComponent(component: Record<string, any>, config: CustomConfig):
             // salvataggio enums
             const promiseEnum: Promise<void> = enumFactory.saveToFile(finalPath).catch((err: CustomError) => {
                 console.warn(`WARNING: Unable to save enums file, in component ${compName}; enums skipped`);
-
+               
                 // TODO verbse mode
                 // console.warn('Error Code: ', err.errorCode);
                 //  console.warn('Error message: ', err.message);
