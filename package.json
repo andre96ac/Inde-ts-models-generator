@@ -6,7 +6,7 @@
   "type": "module",
   "typings": "build/app",
   "bin": {
-    "inde-ts-models": "build/commands/create.js"
+    "inde-ts-models": "build/commandList.js"
   },
   "repository": {
     "type": "git",
@@ -14,7 +14,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "node build/app.js generate"
+    "start": "node build/commandList.js generate "
   },
   "author": "Andrea Cuppini",
   "license": "ISC",
