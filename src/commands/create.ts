@@ -20,10 +20,12 @@ const DEFAULT_CONFIG: CustomConfig = _DEFAULT_CONFIG as CustomConfig;
 
 //#region MAIN
 
+createCommand();
+
 /**
  * Comando principale di creazione
  */
-export function createCommand(): void{
+function createCommand(): void{
 
     yargs(hideBin(process.argv))
         .command(

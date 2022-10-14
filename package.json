@@ -6,14 +6,13 @@
   "type": "module",
   "typings": "build/app",
   "bin": {
-    "inde-ts-models": "build/app.js"
+    "inde-ts-models": "build/commands/create.js"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/andre96ac/Inde-ts-models-generator.git"
   },
   "scripts": {
-    "test": "node build/app.js generate -u https://api.gouego.com/$metadata -c \"C:\\Users\\Andrea Cuppini\\Desktop\\myconfig.json\"",
     "build": "tsc",
     "start": "node build/app.js generate"
   },
