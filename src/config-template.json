@@ -4,6 +4,8 @@
     "getFactoryMethod": true,
     "getClassNameMethod": true,
     "getRemoteEntityNameMethod": true,
+    "propertiesGetMethods": false,
+    "propertiesSetMethods": false,
     "propertiesAccessibility": "private",
     "propertiesCustomPrefix": "",
     "normalizeClassNames": true,

@@ -9,7 +9,11 @@ export interface CustomConfig{
     getClassNameMethod: boolean;
     //set true if you want to generatye a getRemoteEntityName method which returns the name of the entity incoming from instant developer
     getRemoteEntityNameMethod: boolean;
-    // set the default accessibility for the generated properties
+    //set true if you want to generate get methods for all properties
+    propertiesGetMethods: boolean,
+    //set true if you want to generate set methods for all properties
+    propertiesSetMethods: boolean,
+    // set the default accessibility for the generated properties (Private and protected properties will be automatically prefixed with a '_')
     propertiesAccessibility: 'private' | 'public' | 'protected';
     // add a custom string prefix to all generated properties names
     propertiesCustomPrefix: string;

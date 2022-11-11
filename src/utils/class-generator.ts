@@ -265,6 +265,14 @@ export class ClassGenerator{
         return finalString;
     }
 
+    private getGetterMethods(): string{
+        return '';
+    }
+
+    private getSetterMethods(): string{
+        return '';
+    }
+
     private getFactoryMethod(): string{
         if(this.params.getFactoryMethod){
 
@@ -293,7 +301,7 @@ export class ClassGenerator{
 
             return `\tgetRemoteName(): string{
         return '${this.suppliedName}'
-    }\n\m`
+    }\n\n`
         }
         else {
             return '';

@@ -220,7 +220,7 @@ export class EnumSingleGenerator{
 
 
         const properties = this.arProperties
-                            .map(prop => `${prop.name} = ${this.getPropFormattedValue(prop)}, \n`)
+                            .map(prop => `\t${prop.name} = ${this.getPropFormattedValue(prop)}, \n`)
                             .reduce((el, acc) => el+acc)
                             .slice(0, -2)
 
