@@ -12,6 +12,7 @@
     "normalizeClassFilesNames": true,
     "importsPathExtension": true,
     "componentsWhiteList": ["*"],
-    "outDir": "./"
+    "outDir": "./",
+    "regionAnnotations": true
 
 }

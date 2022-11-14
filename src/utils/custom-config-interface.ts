@@ -27,5 +27,7 @@ export interface CustomConfig{
     componentsWhiteList: string[] | null;
     // directory where to create the "model" folder
     outDir: string;
+    // generate region annotations (in form of //#region <...>    //endregion) to better divide generated code
+    regionAnnotations: boolean;
 
 }

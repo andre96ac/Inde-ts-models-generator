@@ -109,7 +109,8 @@ export class ClassGenerator{
         let returnValue = '';
         switch(type){
             case "Date":
-                returnValue = " = new Date()";
+                // returnValue = " = new Date()";
+                returnValue = "";
             break;
             case "string":
                 returnValue = ` = ''`;
@@ -200,12 +201,18 @@ export class ClassGenerator{
         const factoryMethod = this.getFactoryMethod();
         const classNameMethod = this.getClassNameMethod();
         const remoteNameMethod = this.getRemoteNameMehtod();
+        const accessorMethods = this.getAccessorMethods();
+
         
-        return imports + start + properties + constructor + initMethod + factoryMethod + classNameMethod + remoteNameMethod + end
+        return imports + start + properties + constructor + initMethod + factoryMethod + classNameMethod + remoteNameMethod + accessorMethods + end
     }
 
+    //
 
     private getPropertiesString(): string{
+        const startRegion: string = this.params.regionAnnotations? '\t//#region PROPERTIES\n' : '';
+        const endRegion: string = this.params.regionAnnotations? '\t//#endregion\n' : '';
+
         let properties: string = '';
 
         if(!! this.arProperties && this.arProperties.length > 0){
@@ -215,11 +222,10 @@ export class ClassGenerator{
             })
             .reduce((el, acc) => acc + el)
 
-            properties += '\n'
-            properties += '\n'
+            properties = startRegion +  properties + endRegion + '\n' + '\n'
 
         }
-        return properties;
+        return properties
     }
 
 
@@ -240,7 +246,7 @@ export class ClassGenerator{
             const end = `\t}`
 
             const properties: string = this.arProperties.length > 0? this.arProperties
-                                                .map(elProp => `\t\tthis.${elProp.name} ${this.getInitValueForType(elProp.type)};\n`)
+                                                .map(elProp => `\t\tthis.${elProp.name}${this.getInitValueForType(elProp.type)};\n`)
                                                 .reduce((el, acc) => acc+el) : ''
 
             finalString = start + properties + end + '\n' + '\n'
@@ -256,7 +262,7 @@ export class ClassGenerator{
             const end = `\t}`
 
             const properties: string = this.arProperties.length > 0? this.arProperties
-                                                .map(elProp => `\t\tthis.${elProp.name} ${this.getInitValueForType(elProp.type)};\n`)
+                                                .map(elProp => `\t\tthis.${elProp.name}${this.getInitValueForType(elProp.type)};\n`)
                                                 .reduce((el, acc) => acc+el): ''
 
             finalString = start + properties + end + "\n" + "\n"
@@ -265,13 +271,30 @@ export class ClassGenerator{
         return finalString;
     }
 
-    private getGetterMethods(): string{
-        return '';
+    private getAccessorMethods(): string{
+
+        const startRegion: string = this.params.regionAnnotations? '\t//#region ACCESSORS\n' : '';
+        const endRegion: string = this.params.regionAnnotations? '\t//#endregion \n' : '';
+
+        let final = '';
+
+        if(this.params.propertiesGetMethods || this.params.propertiesSetMethods){
+            final = this.arProperties.map((elProp, idx) => {
+                const finalPropName = elProp.name.substring(1, elProp.name.length);
+
+                const getMethod: string = this.params.propertiesGetMethods? `\tpublic get ${finalPropName}(){return this.${elProp.name}}\n` : ``
+                const setMethod: string = this.params.propertiesSetMethods? `\tpublic set ${finalPropName}(value){this.${elProp.name} = value}\n` : ``
+
+                return getMethod + setMethod + ((idx < this.arProperties.length - 1)? '\n' : '');
+            })
+            .reduce((el, acc) => el + acc);
+
+        }
+
+        return startRegion + final + endRegion + '\n';
+
     }
 
-    private getSetterMethods(): string{
-        return '';
-    }
 
     private getFactoryMethod(): string{
         if(this.params.getFactoryMethod){
@@ -368,3 +391,4 @@ export interface ClassGeneratorImport{
     tokens: string[];
     sourcePathName: string;
 }
+
