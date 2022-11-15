@@ -192,7 +192,7 @@ export class ClassGenerator{
      * @returns 
      */
     public getFileContentString(): string{
-        const start = `export class ${this.className}{\n`  
+        const start = `export class ${this.className} ${this.getInheritance()}{\n`  
         const end = `}`
         const properties = this.getPropertiesString();
         const imports = this.getImportsString();
@@ -208,6 +208,31 @@ export class ClassGenerator{
     }
 
     //
+
+    private getInheritance(): string{
+        let extendPart: string = ''; 
+        let implementsPart: string = ''; 
+
+        if(!!this.params.extendClass && this.params.extendClass?.name?.length > 0 && this.params.extendClass?.importPath?.length >  0){
+            extendPart = `extends ${this.params.extendClass.name} `;
+            this.addImport(this.params.extendClass.name, this.params.extendClass.importPath)
+        }
+        if(!!this.params.extendInterfaces && this.params.extendInterfaces.length > 0){
+            implementsPart = this.params.extendInterfaces
+            .map(el => el.name)
+            .reduce((acc, el, idx) => {
+                if(el?.length > 0){
+                    this.addImport(el, this.params.extendInterfaces[idx].importPath)
+                    return`${acc}, ${el}`;
+                }
+                else{
+                    return '';
+                }
+            })
+            implementsPart = `implements ${implementsPart}`
+        }
+        return extendPart + implementsPart
+    }
 
     private getPropertiesString(): string{
         const startRegion: string = this.params.regionAnnotations? '\t//#region PROPERTIES\n' : '';

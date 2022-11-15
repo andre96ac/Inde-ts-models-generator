@@ -13,6 +13,8 @@
     "importsPathExtension": true,
     "componentsWhiteList": ["*"],
     "outDir": "./",
-    "regionAnnotations": true
+    "regionAnnotations": true,
+    "extendClass": null,
+    "extendInterfaces": []
 
 }

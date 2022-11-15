@@ -108,7 +108,9 @@ async function main(){
         importsPathExtension: true,
         componentsWhiteList: ["*"],
         outDir: "./",
-        regionAnnotations: true
+        regionAnnotations: true,
+        extendClass: null,
+        extendInterfaces: []
     }
 
 
@@ -174,7 +176,9 @@ It is also possible to use the ```IndeGenerator.ClassGenerator.ClassGenerator```
         importsPathExtension: true,
         componentsWhiteList: ["*"],
         outDir: "./",
-        regionAnnotations: true
+        regionAnnotations: true,
+        extendClass: null,
+        extendInterfaces: []
     }
 
 
@@ -244,6 +248,10 @@ Here you can see the expected config file structure:
     outDir: string;
     // generate region annotations (in form of //#region <...>    //endregion) to better divide generated code
     regionAnnotations: boolean;
+    // a class from which models must inherit
+    extendClass: {name: string, importPath: string} | null;
+    // a list of interfaces which models must implements
+    extendInterfaces: {name: string, importPath: string}[]
     }   
 ```
 ##### NOTE: the names of getter and setter method will automatically truncate the first letter to avoid duplicates names. To get the correct behavior, please prefix properties names with a character using the option "propertiesCustomPrefix"  
@@ -267,7 +275,9 @@ Here you can see the expected config file structure:
     "importsPathExtension": true,
     "componentsWhiteList": ["*"],
     "outDir": "./",
-    "regionAnnotations": true
+    "regionAnnotations": true,
+    "extendClass": null,
+    "extendInterfaces": []
 }
 ```
 

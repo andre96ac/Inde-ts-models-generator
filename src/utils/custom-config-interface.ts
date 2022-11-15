@@ -29,5 +29,9 @@ export interface CustomConfig{
     outDir: string;
     // generate region annotations (in form of //#region <...>    //endregion) to better divide generated code
     regionAnnotations: boolean;
+    // a class from which models must inherit
+    extendClass: {name: string, importPath: string} | null;
+    // a list of interfaces which models must implements
+    extendInterfaces: {name: string, importPath: string}[]
 
 }
