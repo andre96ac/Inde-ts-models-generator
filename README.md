@@ -110,7 +110,9 @@ async function main(){
         outDir: "./",
         regionAnnotations: true,
         extendClass: null,
-        extendInterfaces: []
+        extendInterfaces: [],
+        getInitAllMethod: false,
+        getKeyDescriptorMethod: false
     }
 
 
@@ -178,7 +180,9 @@ It is also possible to use the ```IndeGenerator.ClassGenerator.ClassGenerator```
         outDir: "./",
         regionAnnotations: true,
         extendClass: null,
-        extendInterfaces: []
+        extendInterfaces: [],
+        getInitAllMethod: false,
+        getKeyDescriptorMethod: false
     }
 
 
@@ -281,7 +285,9 @@ Here you can see the expected config file structure:
     "outDir": "./",
     "regionAnnotations": true,
     "extendClass": null,
-    "extendInterfaces": []
+    "extendInterfaces": [],
+    "getInitAllMethod": false,
+    "getKeyDescriptorMethod": false
 }
 ```
 
