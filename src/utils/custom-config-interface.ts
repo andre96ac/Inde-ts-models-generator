@@ -3,6 +3,10 @@ export interface CustomConfig{
     initProperties: boolean;
     //set if you want the properties inizialized at declaration, inside the constructor, or in a specific method ("initProperties" must be true)
     initPropertiesMode: 'normal' | 'constructor' | 'initMethod';
+    //generate a method which inits all properties to null;
+    getInitAllMethods: boolean;
+    //generate a method which returns a string array containing the names of primary Key properties
+    getKeyDescriptorMethod: boolean
     //set true if you want to generatye a getFactory method which returns the prototype of the class 
     getFactoryMethod: boolean;
     //set true if you want to generatye a getClassName method which returns the name of the class

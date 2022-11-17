@@ -15,6 +15,9 @@
     "outDir": "./",
     "regionAnnotations": true,
     "extendClass": null,
-    "extendInterfaces": []
+    "extendInterfaces": [],
+    "getInitAllMethods": false,
+    "getKeyDescriptorMethod": true
+
 
 }

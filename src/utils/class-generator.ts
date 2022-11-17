@@ -17,6 +17,8 @@ export class ClassGenerator{
     //array di importazioni da aggiungere
     private arImports: ClassGeneratorImport[] = [];
 
+    private arPrimaryKeys: string[] = [];
+
 
     /**
      * Logica del nome classe: se nel nome fornito son presenti maiuscole isolate, si ipotizza camelcase, e quindi tutto resta invariato, tranne la prima lettera che viene messa in maiuscolo
@@ -58,6 +60,13 @@ export class ClassGenerator{
         }
 
 
+    }
+
+
+    public setKeys(keys: string[]){
+        if(!!keys && keys.length > 0){
+            this.arPrimaryKeys = keys;
+        }
     }
 
 
@@ -198,13 +207,15 @@ export class ClassGenerator{
         const imports = this.getImportsString();
         const constructor = this.getConstructor();
         const initMethod = this.getInitMethod();
+        const initAllMethod = this.getInitAllMethod();
         const factoryMethod = this.getFactoryMethod();
         const classNameMethod = this.getClassNameMethod();
         const remoteNameMethod = this.getRemoteNameMehtod();
         const accessorMethods = this.getAccessorMethods();
+        const keyDescriptorMethod = this.getKeyDescriptorMethod();
 
         
-        return imports + start + properties + constructor + initMethod + factoryMethod + classNameMethod + remoteNameMethod + accessorMethods + end
+        return imports + start + properties + constructor + initMethod + initAllMethod + keyDescriptorMethod + factoryMethod + classNameMethod + remoteNameMethod + accessorMethods + end
     }
 
     //
@@ -283,11 +294,44 @@ export class ClassGenerator{
         let finalString = '';
 
         if(this.params.initProperties && this.params.initPropertiesMode == 'initMethod'){
-            const start = `\tinit() {\n`
-            const end = `\t}`
+            const start = `\tinit(): typeof this {\n`
+            const end = `\t\treturn this\n\t}`
 
             const properties: string = this.arProperties.length > 0? this.arProperties
                                                 .map(elProp => `\t\tthis.${elProp.name}${this.getInitValueForType(elProp.type)};\n`)
+                                                .reduce((el, acc) => acc+el): ''
+
+            finalString = start + properties + end + "\n" + "\n"
+        }
+
+        return finalString;
+    }
+
+    private getKeyDescriptorMethod():string{
+        let finalString = '';
+
+        if(this.params.getKeyDescriptorMethod){
+            const start = `\tgetPrimaryKeys(): string[]{\n`
+            const end = '\t}'
+    
+            const body: string = `\t\treturn [${this.arPrimaryKeys.length > 0? this.arPrimaryKeys.map(el => `"${el}"`).reduce((acc, el) => `${acc},${el}`) : ''}]\n`
+            finalString = start + body + end + '\n' + '\n';
+
+        }
+
+        return finalString;
+         
+    }
+
+    private getInitAllMethod(): string{
+        let finalString = '';
+
+        if(this.params.getInitAllMethods){
+            const start = `\tinitAll(): typeof this {\n`
+            const end = `\t\treturn this\n\t}`
+
+            const properties: string = this.arProperties.length > 0? this.arProperties
+                                                .map(elProp => `\t\t//@ts-ignore\n\t\tthis.${elProp.name} = undefined;\n`)
                                                 .reduce((el, acc) => acc+el): ''
 
             finalString = start + properties + end + "\n" + "\n"
@@ -409,6 +453,7 @@ export interface ClassGeneratorProperty{
     type: TS_TYPES | string,
     required: boolean;
     accessibility: PROP_ACCESSIBILTY;
+    // isPrimary: boolean
 }
 
 

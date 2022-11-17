@@ -286,6 +286,13 @@ function createSingleTsEnumFromObjEnum(objEnum: Record<string, any>, config: Cus
 
 function createTsClassFromSingleObj(objEntity: Record<string, any>, config: CustomConfig): ClassGenerator{
     
+
+    let arPrimaryKeys = []
+    if(!!objEntity.Key){
+        arPrimaryKeys = objEntity.Key[0].PropertyRef.map((el:any) => el.$.Name);
+    }
+
+
     let finalObj: null | ClassGenerator = null;
     
     const name = objEntity.$.Name;
@@ -311,6 +318,8 @@ function createTsClassFromSingleObj(objEntity: Record<string, any>, config: Cust
             }
         })
     }
+
+    finalObj.setKeys(arPrimaryKeys);
 
     
 
@@ -390,6 +399,7 @@ function mergeConfig(defaultConfig: CustomConfig, suppliedConfig?: CustomConfig)
  * @returns 
  */
 function processComponent(component: Record<string, any>, config: CustomConfig): Promise<void>{
+
 
             const compName: string = !!component?.EntityContainer[0]?.$?.Name? component?.EntityContainer[0]?.$?.Name : 'null';
             const baseFolderName: string = 'models';
