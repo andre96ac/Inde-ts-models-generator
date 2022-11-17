@@ -17,7 +17,7 @@
     "extendClass": null,
     "extendInterfaces": [],
     "getInitAllMethods": false,
-    "getKeyDescriptorMethod": true
+    "getKeyDescriptorMethod": false
 
 
 }
