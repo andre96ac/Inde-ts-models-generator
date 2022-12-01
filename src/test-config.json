@@ -2,7 +2,7 @@
 
     "componentsWhiteList": ["*"],
     "outDir": "./",
-    "entitiesWhiteList": ["Firma", "FollowApp"],
+    "entitiesWhiteList": ["*"],
     "verbose": true,
     "saveJsonToFile": true,
 
@@ -24,9 +24,9 @@
     "getInitAllMethods": false,
     "getKeyDescriptorMethod": false,
     
-    "compAsDbName": true,
-    "ifNotExistCondition": true,
-    "generateRowId": false
+    "compAsDbName": false,
+    "ifNotExistCondition": false,
+    "generateRowId": true
 
 
 

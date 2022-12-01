@@ -24,7 +24,7 @@ export class SqlGenerator{
      * Restituisce il nome fornito TUTTO MAIUSCOLO
      */
     public get dbTableName():string{
-        if(!!this.dbName && this.dbName.length > 0){
+        if(!!this.dbName && this.dbName.length > 0 && this.params.compAsDbName){
             return `${this.dbName}.${this.suppliedName}`
         }
         else{

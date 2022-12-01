@@ -134,7 +134,7 @@ async function generateSqlCommandHandler(args: yargs.ArgumentsCamelCase<{}>){
  * @returns 
  */
 export function createArSqlClassesFromComp(component: Record<string, any>, config: CustomConfig):SqlGenerator[]{
-    const compName = component.name;
+    const compName = !!component?.EntityContainer[0]?.$?.Name? component?.EntityContainer[0]?.$?.Name : 'null';
     const arEntityType: Record<string, any>[] = component.EntityType;
     
     const finalArEntityType: Record<string, any>[] = filterEntitiesFromList(arEntityType, config.entitiesWhiteList);
