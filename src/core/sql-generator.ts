@@ -106,7 +106,7 @@ export class SqlGenerator{
 
     private getPropertiesString(): string{
         return this.arProperties
-                                .map(elProp => `\t${elProp.name} ${elProp.type} ${elProp.isPrimary? 'PRIMARY KEY ' : ''}${elProp.required? 'NOT NULL ' : ''},\n`)
+                                .map(elProp => `\t${elProp.name} ${elProp.type}${elProp.isPrimary? ' PRIMARY KEY' : ''}${elProp.required? ' NOT NULL' : ''},\n`)
                                 .reduce((acc, el) => acc + el);
     } 
 

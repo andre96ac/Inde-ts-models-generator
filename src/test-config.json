@@ -24,7 +24,7 @@
     "getInitAllMethods": false,
     "getKeyDescriptorMethod": false,
     
-    "compAsDbName": false,
+    "compAsDbName": true,
     "ifNotExistCondition": true,
     "generateRowId": false
 

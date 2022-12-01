@@ -12,13 +12,13 @@
                 "<node_internals>/**"
             ],
             "preLaunchTask": "npm: build",
-            "program": "${workspaceFolder}\\src\\app.ts",
+            "program": "${workspaceFolder}\\build\\commandList.js",
             // "args": "generate --url='https://api.gouego.com/$metadata'",
 
             "args": [
-                "generate",
+                "generate-sql",
                 "--\--url\=='https://api.gouego.com/$metadata'",
-                "--\--config\=='C:\\Users\\Andrea Cuppini\\Desktop\\myconfig.json'"
+                "--\--config\=='${workspaceFolder}\\src\\test-config.json'"
             ],
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
