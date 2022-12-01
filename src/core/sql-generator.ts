@@ -90,7 +90,7 @@ export class SqlGenerator{
     public getFileContentString(): string{
 
         const start = `CREATE TABLE ${this.params.ifNotExistCondition? `IF NOT EXISTS` : ''} ${this.dbTableName} (\n`;
-        const end = `)${this.params.generateRowId? '' : ' WHITOUT ROWID'}; \n\n`
+        const end = `)${this.params.generateRowId? '' : ' WITHOUT ROWID'}; \n\n`
         const properties = this.getPropertiesString();
 
 

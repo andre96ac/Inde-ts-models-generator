@@ -312,7 +312,7 @@ Here you can see the expected config file structure:
     
         //add "if not exist" statement to table creation command
         ifNotExistCondition: boolean;
-        //set false if you want to insert the "whitout rowid" statement to table creation command
+        //set false if you want to insert the "without rowid" statement to table creation command
         generateRowId: boolean;
         //set true if you want to prefix the table name with the component name as db name, following syntax "CREATE TABLE {{comp name}}.{{entity name}}..."
         compAsDbName: boolean;
