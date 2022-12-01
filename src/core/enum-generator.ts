@@ -1,5 +1,5 @@
 import * as fs from 'fs/promises'
-import { CustomConfig } from './custom-config-interface.js';
+import { CustomConfig } from './interfaces/custom-config-interface.js';
 import { ERROR_CODES, CustomError, TS_TYPES } from './various.js';
 
 export class EnumListGenerator{

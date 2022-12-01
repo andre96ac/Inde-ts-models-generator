@@ -1,5 +1,7 @@
 import * as fs from 'fs/promises'
-import { CustomConfig } from './custom-config-interface.js';
+import { CustomConfig } from './interfaces/custom-config-interface.js';
+import { GeneratorImport } from './interfaces/generator-import-interface.js';
+import { ClassGeneratorProperty } from './interfaces/generator-property-interface.js';
 import { EnumSingleGenerator } from './enum-generator.js';
 import { ERROR_CODES, INDE_TS_TYPES_MAP, INDE_TYPES, CustomError, TS_TYPES, PROP_ACCESSIBILTY } from './various.js';
 export class ClassGenerator{
@@ -15,7 +17,7 @@ export class ClassGenerator{
 
 
     //array di importazioni da aggiungere
-    private arImports: ClassGeneratorImport[] = [];
+    private arImports: GeneratorImport[] = [];
 
     private arPrimaryKeys: string[] = [];
 
@@ -141,19 +143,21 @@ export class ClassGenerator{
 
 
     public addPrimaryKey(name: string, type: TS_TYPES, required = false, privateField: PROP_ACCESSIBILTY = 'public'): ClassGenerator{
-        this.addProperty(name, type, required, privateField)
+        this.arPrimaryKeys.push(name);
+        this.addProperty(name, type, required, privateField, true);
         return this;
     }
 
 
     
-    public addProperty(name: string, type: TS_TYPES | string, required = false, accessibility: PROP_ACCESSIBILTY = 'public'): ClassGenerator{
+    public addProperty(name: string, type: TS_TYPES | string, required = false, accessibility: PROP_ACCESSIBILTY = 'public', isPrimary: boolean = false): ClassGenerator{
         if(!!name && name.length > 0 && !!type && type.length > 0 && required !== null && required !== undefined){
             this.arProperties.push({
                 name,
                 type,
                 required,
-                accessibility
+                accessibility,
+                isPrimary
             })
 
         }
@@ -215,7 +219,18 @@ export class ClassGenerator{
         const keyDescriptorMethod = this.getKeyDescriptorMethod();
 
         
-        return imports + start + properties + constructor + initMethod + initAllMethod + keyDescriptorMethod + factoryMethod + classNameMethod + remoteNameMethod + accessorMethods + end
+        return  imports                 + 
+                start                   + 
+                properties              + 
+                constructor             + 
+                initMethod              + 
+                initAllMethod           + 
+                keyDescriptorMethod     + 
+                factoryMethod           + 
+                classNameMethod         + 
+                remoteNameMethod        + 
+                accessorMethods         + 
+                end
     }
 
     //
@@ -425,7 +440,7 @@ export class ClassGenerator{
     * @param indeType tipo proveniente da inde
     * @returns 
     */
-    static converToTsType(indeType: INDE_TYPES | string): {finalType: TS_TYPES | string, isEnum: boolean}{
+    static convertToTsType(indeType: INDE_TYPES | string): {finalType: TS_TYPES | string, isEnum: boolean}{
 
         let finalType: TS_TYPES | string | null = null;
         let arTsTypes  = Object.keys(INDE_TS_TYPES_MAP) as TS_TYPES[];
@@ -448,17 +463,5 @@ export class ClassGenerator{
 
 
 
-export interface ClassGeneratorProperty{
-    name: string,
-    type: TS_TYPES | string,
-    required: boolean;
-    accessibility: PROP_ACCESSIBILTY;
-    // isPrimary: boolean
-}
 
-
-export interface ClassGeneratorImport{
-    tokens: string[];
-    sourcePathName: string;
-}
 

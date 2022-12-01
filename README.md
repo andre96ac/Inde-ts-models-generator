@@ -7,7 +7,7 @@
 <br>
 
 # Inde-ts-models-generator
-Single-command script to generate angular-style model files (*.model.ts) starting from Instant developer api $metadata descriptor
+Single-command script to generate angular-style model files (*.model.ts), or SQL table structure creation query, starting from Instant developer api $metadata descriptor
 
 <br>
 
@@ -17,6 +17,7 @@ Single-command script to generate angular-style model files (*.model.ts) startin
   - [Usage](#usage)
     - [Single command usage](#single-command-usage)
     - [Code usage](#code-usage)
+        - [Sql files generation follow the model generator pattern; simply substitute ClassGenerator with SqlGenerator](#sql-files-generation-follow-the-model-generator-pattern-simply-substitute-classgenerator-with-sqlgenerator)
     - [Configuration](#configuration)
         - [NOTE: In any case, remember that the options provided via command line will take precedence over those in the configuration file](#note-in-any-case-remember-that-the-options-provided-via-command-line-will-take-precedence-over-those-in-the-configuration-file)
         - [NOTE: the names of getter and setter method will automatically truncate the first letter to avoid duplicates names. To get the correct behavior, please prefix properties names with a character using the option "propertiesCustomPrefix"](#note-the-names-of-getter-and-setter-method-will-automatically-truncate-the-first-letter-to-avoid-duplicates-names-to-get-the-correct-behavior-please-prefix-properties-names-with-a-character-using-the-option-propertiescustomprefix)
@@ -53,10 +54,16 @@ If you want to use the script direcly from terminal, install it globally istead
 <br>
 
 ### Single command usage
-to generate files, simply run 
+to generate model files, simply run 
 ```bash
-    inde-ts-models generate -u https://my-application.aspx/$metadata 
+    inde-ts generate-models -u https://my-application.aspx/$metadata 
 ```
+
+to generate sql files instead, run 
+```bash
+    inde-ts generate-sql -u https://my-application.aspx/$metadata 
+```
+
 where "-u" option is the url of your Instant Developer application where $metadata informations are exposed.
 
 <br>
@@ -71,7 +78,7 @@ Alternatively, you can provide a filesystem path of a xml file containing the $m
 Optionally, you can provide a configuration file path, where you can specify more config options (see "Configuration" section below for more infos)
 
 ```bash
-    inde-ts-models generate -u {{METADATA URL}} -c ./configuration.json
+    inde-ts-models generate -u https://my-application.aspx/$metadata  -c ./configuration.json
 ```
 
 
@@ -93,7 +100,16 @@ import * as IndeGenerator from 'inde-ts-models-generator'
 async function main(){
 
     //this follow the pattern of the config json file
+    //Not all these properties will be used;
+
     const CONFIG: IndeGenerator.CustomConfigInterface.CustomConfig = {
+        entitiesWhiteList: ["*"],
+        componentsWhiteList: ["*"],
+        outDir: "./",
+        verbose: false,
+        saveJsonToFile: false,
+    
+    
         initProperties: true, 
         initPropertiesMode: "normal",
         getFactoryMethod: true,
@@ -106,13 +122,15 @@ async function main(){
         normalizeClassNames: true,
         normalizeClassFilesNames: true,
         importsPathExtension: true,
-        componentsWhiteList: ["*"],
-        outDir: "./",
         regionAnnotations: true,
         extendClass: null,
         extendInterfaces: [],
-        getInitAllMethod: false,
-        getKeyDescriptorMethod: false
+        getInitAllMethods: false,
+        getKeyDescriptorMethod: false,
+        
+        compAsDbName: false,
+        ifNotExistCondition: true,
+        generateRowId: false
     }
 
 
@@ -163,7 +181,15 @@ It is also possible to use the ```IndeGenerator.ClassGenerator.ClassGenerator```
    async function createArbitraryClass() {
 
     //Create the configuration object
-        const CONFIG: IndeGenerator.CustomConfigInterface.CustomConfig = {
+    //Not all these properties will be used;
+    const CONFIG: IndeGenerator.CustomConfigInterface.CustomConfig = {
+        entitiesWhiteList: ["*"],
+        componentsWhiteList: ["*"],
+        outDir: "./",
+        verbose: false,
+        saveJsonToFile: false,
+    
+    
         initProperties: true, 
         initPropertiesMode: "normal",
         getFactoryMethod: true,
@@ -176,13 +202,15 @@ It is also possible to use the ```IndeGenerator.ClassGenerator.ClassGenerator```
         normalizeClassNames: true,
         normalizeClassFilesNames: true,
         importsPathExtension: true,
-        componentsWhiteList: ["*"],
-        outDir: "./",
         regionAnnotations: true,
         extendClass: null,
         extendInterfaces: [],
-        getInitAllMethod: false,
-        getKeyDescriptorMethod: false
+        getInitAllMethods: false,
+        getKeyDescriptorMethod: false,
+        
+        compAsDbName: false,
+        ifNotExistCondition: true,
+        generateRowId: false
     }
 
 
@@ -207,6 +235,8 @@ It is also possible to use the ```IndeGenerator.ClassGenerator.ClassGenerator```
 
 ```
 
+##### Sql files generation follow the model generator pattern; simply substitute ClassGenerator with SqlGenerator
+
 <br>
 
 ### Configuration
@@ -222,6 +252,23 @@ Here you can see the expected config file structure:
 
 ```typescript
     {
+        //#region GENERICS
+        
+        // whitelist of components to use ( null => only main app, [*] => all, ["comp1", "comp2"] => only specified )
+        componentsWhiteList: string[] | null;
+        // whitelist of entities to use ( [*] => all, ["comp1", "comp2"] => only specified )
+        entitiesWhiteList: string[] 
+        // directory where to create the "model" or "sql" folder
+        outDir: string;
+        //enable verbose mode
+        verbose: boolean;
+        //save InDe generated json descriptor to file (used for test purposes)
+        saveJsonToFile: boolean;
+    
+        //#endregion
+    
+        //#region MODELS
+    
         //Set true if you want all the non primitive properties initialized
         initProperties: boolean;
         //set if you want the properties inizialized at declaration, inside the constructor, or in a specific method ("initProperties" must be true)
@@ -250,16 +297,27 @@ Here you can see the expected config file structure:
         normalizeClassFilesNames: boolean;
         // set true if you want to add ".js" at the end of generated import paths
         importsPathExtension: boolean;
-        // whitelist of components to use ( null => only main app, [*] => all, ["comp1", "comp2"] => only specified )
-        componentsWhiteList: string[] | null;
-        // directory where to create the "model" folder
-        outDir: string;
         // generate region annotations (in form of //#region <...>    //endregion) to better divide generated code
         regionAnnotations: boolean;
         // a class from which models must inherit
         extendClass: {name: string, importPath: string} | null;
         // a list of interfaces which models must implements
         extendInterfaces: {name: string, importPath: string}[]
+    
+    
+        //#endregion
+    
+    
+        //#region SQL
+    
+        //add "if not exist" statement to table creation command
+        ifNotExistCondition: boolean;
+        //set false if you want to insert the "whitout rowid" statement to table creation command
+        generateRowId: boolean;
+        //set true if you want to prefix the table name with the component name as db name, following syntax "CREATE TABLE {{comp name}}.{{entity name}}..."
+        compAsDbName: boolean;
+    
+        //#endregion
     }
 ```
 ##### NOTE: the names of getter and setter method will automatically truncate the first letter to avoid duplicates names. To get the correct behavior, please prefix properties names with a character using the option "propertiesCustomPrefix"  
@@ -269,7 +327,13 @@ Here you can see the expected config file structure:
  and this is an example containing the default config. You can supply all, or only some properties; the others will get values below:
 ```json
 {
-   "initProperties": true, 
+    "componentsWhiteList": ["*"],
+    "outDir": "./",
+    "entitiesWhiteList": ["Firma", "FollowApp"],
+    "verbose": true,
+    "saveJsonToFile": true,
+
+    "initProperties": true, 
     "initPropertiesMode": "normal",
     "getFactoryMethod": true,
     "getClassNameMethod": true,
@@ -281,13 +345,16 @@ Here you can see the expected config file structure:
     "normalizeClassNames": true,
     "normalizeClassFilesNames": true,
     "importsPathExtension": true,
-    "componentsWhiteList": ["*"],
-    "outDir": "./",
     "regionAnnotations": true,
     "extendClass": null,
     "extendInterfaces": [],
-    "getInitAllMethod": false,
-    "getKeyDescriptorMethod": false
+    "getInitAllMethods": false,
+    "getKeyDescriptorMethod": false,
+    
+    "compAsDbName": false,
+    "ifNotExistCondition": true,
+    "generateRowId": false
+
 }
 ```
 

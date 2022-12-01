@@ -3,6 +3,7 @@ node_modules
 /src
 /notes
 /models
+/sql
 tsconfig.json
 *.js.map
 .js.map

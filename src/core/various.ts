@@ -29,13 +29,28 @@ export type TS_TYPES =
 "Date"      |
 "boolean"   ;
 
-
+export type SQL_TYPES = 
+"BLOB"      |
+"INTEGER"   |
+"REAL"      |
+"NUMERIC"   |
+"TEXT"      |
+"UNKNOWN"
 
 export const INDE_TS_TYPES_MAP: Record<TS_TYPES, INDE_TYPES[]> = {
     string: ["Edm.String", "Edm.Guid"],
     number: ["Edm.Decimal", "Edm.Int16", "Edm.Int32", "Edm.Int64", "Edm.Double"],
     boolean: ["Edm.Binary"],
     Date: ["Edm.Date", "Edm.DateTimeOffset", "Edm.TimeOfDay"]
+}
+
+export const INDE_SQL_TYPES_MAP: Record<SQL_TYPES, INDE_TYPES[]> = {
+    TEXT: ["Edm.String", "Edm.Guid", "Edm.Date", "Edm.DateTimeOffset", "Edm.TimeOfDay"],
+    REAL: ["Edm.Decimal", "Edm.Int16", "Edm.Int32", "Edm.Int64", "Edm.Double"],
+    INTEGER: ["Edm.Binary"],
+    BLOB: [],
+    NUMERIC: [],
+    UNKNOWN: []
 }
 
 export class CustomError extends Error{

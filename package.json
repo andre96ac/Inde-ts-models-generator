@@ -6,7 +6,7 @@
   "type": "module",
   "typings": "build/app",
   "bin": {
-    "inde-ts-models": "build/commandList.js"
+    "inde-ts": "build/commandList.js"
   },
   "repository": {
     "type": "git",

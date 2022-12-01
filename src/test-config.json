@@ -1,10 +1,10 @@
 {
-    "entitiesWhiteList": ["*"],
+
     "componentsWhiteList": ["*"],
     "outDir": "./",
-    "verbose": false,
-    "saveJsonToFile": false,
-
+    "entitiesWhiteList": ["Firma", "FollowApp"],
+    "verbose": true,
+    "saveJsonToFile": true,
 
     "initProperties": true, 
     "initPropertiesMode": "normal",
