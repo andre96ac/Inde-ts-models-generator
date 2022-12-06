@@ -249,17 +249,43 @@ function processComponent(component: Record<string, any>, config: CustomConfig):
 
 
             // salvataggio modelli
-            const promiseModels: Promise<void> = Promise.all(arTsClasses.map(el => {el.saveOnFileSystem(finalPath).catch((err: CustomError) => {
-                console.warn(`WARNING: Unable to save ${el. fileName}, in component ${compName}; model skipped`)
+            let promiseModels: Promise<void> 
 
-                if(config.verbose){
-                    console.warn('Error Code: ', err.errorCode);
-                    console.warn('Error message: ', err.message);
-                }
+            if(config.outputSingleFile){
+                const finalString = arTsClasses
+                                            .map(el => el.getFileContentString())
+                                            .reduce((acc, el) => `${acc}\n\n\n${el}`)
+                console.log(finalString);
+                
+                const finalPathName = `${finalPath}${compName}.sql`
+                console.log(finalPathName);
 
-                return Promise.resolve();
-            })}))
-            .then(() => Promise.resolve())
+                promiseModels = fs.promises.writeFile(finalPathName, finalString)
+                                                            .catch(err => {
+                                                                console.warn(`WARNING: Unable to save component ${compName} sql file; component skipped`)
+                                                                if(config.verbose){
+                                                                    console.warn('Error: ', err.errorCode);
+                                                                }
+                                                                return Promise.resolve();
+                                                            })
+
+            }
+
+            else{
+                promiseModels = Promise.all(arTsClasses.map(el => {el.saveOnFileSystem(finalPath).catch((err: CustomError) => {
+                    console.warn(`WARNING: Unable to save ${el. fileName}, in component ${compName}; model skipped`)
+    
+                    if(config.verbose){
+                        console.warn('Error Code: ', err.errorCode);
+                        console.warn('Error message: ', err.message);
+                    }
+    
+                    return Promise.resolve();
+                })}))
+                .then(() => Promise.resolve())
+
+            }
+            
 
             // // salvataggio enums
             // const promiseEnum: Promise<void> = enumFactory.saveToFile(finalPath).catch((err: CustomError) => {

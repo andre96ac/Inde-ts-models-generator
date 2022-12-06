@@ -26,7 +26,8 @@
     
     "compAsDbName": false,
     "ifNotExistCondition": false,
-    "generateRowId": true
+    "generateRowId": true,
+    "outputSingleFile": true
 
 
 
