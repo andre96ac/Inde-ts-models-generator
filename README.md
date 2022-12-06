@@ -130,7 +130,9 @@ async function main(){
         
         compAsDbName: false,
         ifNotExistCondition: true,
-        generateRowId: false
+        generateRowId: false,
+        outputSingleFile: false
+        
     }
 
 
@@ -210,7 +212,9 @@ It is also possible to use the ```IndeGenerator.ClassGenerator.ClassGenerator```
         
         compAsDbName: false,
         ifNotExistCondition: true,
-        generateRowId: false
+        generateRowId: false,
+        outputSingleFile: false
+
     }
 
 
@@ -316,6 +320,9 @@ Here you can see the expected config file structure:
         generateRowId: boolean;
         //set true if you want to prefix the table name with the component name as db name, following syntax "CREATE TABLE {{comp name}}.{{entity name}}..."
         compAsDbName: boolean;
+        //generate all table creation instructions in one single file per component (every instruction separated by ';')
+        outputSingleFile: boolean
+
     
         //#endregion
     }
@@ -353,7 +360,8 @@ Here you can see the expected config file structure:
     
     "compAsDbName": false,
     "ifNotExistCondition": true,
-    "generateRowId": false
+    "generateRowId": false,
+    "outputSingleFile": false
 
 }
 ```

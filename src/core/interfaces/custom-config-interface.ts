@@ -65,7 +65,7 @@ export interface CustomConfig{
     generateRowId: boolean;
     //set true if you want to prefix the table name with the component name as db name, following syntax "CREATE TABLE {{comp name}}.{{entity name}}..."
     compAsDbName: boolean;
-    //generate all table creation instructions in one file (every instruction separated by ';')
+    //generate all table creation instructions in one single file per component (every instruction separated by ';')
     outputSingleFile: boolean
 
     //#endregion
