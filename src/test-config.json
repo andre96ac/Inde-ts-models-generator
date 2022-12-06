@@ -3,7 +3,7 @@
     "componentsWhiteList": ["*"],
     "outDir": "./",
     "entitiesWhiteList": ["*"],
-    "verbose": true,
+    "verbose": false,
     "saveJsonToFile": true,
 
     "initProperties": true, 

@@ -255,10 +255,14 @@ function processComponent(component: Record<string, any>, config: CustomConfig):
                 const finalString = arTsClasses
                                             .map(el => el.getFileContentString())
                                             .reduce((acc, el) => `${acc}\n\n\n${el}`)
-                console.log(finalString);
-                
+
+                                            
                 const finalPathName = `${finalPath}${compName}.sql`
-                console.log(finalPathName);
+
+                if(config.verbose){
+                    console.log(finalString);
+                    console.log(finalPathName);
+                }
 
                 promiseModels = fs.promises.writeFile(finalPathName, finalString)
                                                             .catch(err => {
