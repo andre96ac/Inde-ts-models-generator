@@ -20,6 +20,7 @@ export type INDE_TYPES =
 "Edm.Double"    |//
 "Edm.Int16"     |//
 "Edm.Int32"     |//
+"Edm.Boolean"   |
 "Edm.Int64"     ;//
 
 
@@ -38,16 +39,16 @@ export type SQL_TYPES =
 "UNKNOWN"
 
 export const INDE_TS_TYPES_MAP: Record<TS_TYPES, INDE_TYPES[]> = {
-    string: ["Edm.String", "Edm.Guid"],
+    string: ["Edm.String", "Edm.Guid", "Edm.Binary"],
     number: ["Edm.Decimal", "Edm.Int16", "Edm.Int32", "Edm.Int64", "Edm.Double"],
-    boolean: ["Edm.Binary"],
+    boolean: ["Edm.Boolean"],
     Date: ["Edm.Date", "Edm.DateTimeOffset", "Edm.TimeOfDay"]
 }
 
 export const INDE_SQL_TYPES_MAP: Record<SQL_TYPES, INDE_TYPES[]> = {
-    TEXT: ["Edm.String", "Edm.Guid", "Edm.Date", "Edm.DateTimeOffset", "Edm.TimeOfDay"],
+    TEXT: ["Edm.String", "Edm.Guid", "Edm.Date", "Edm.DateTimeOffset", "Edm.TimeOfDay", "Edm.Binary"],
     REAL: ["Edm.Decimal", "Edm.Int16", "Edm.Int32", "Edm.Int64", "Edm.Double"],
-    INTEGER: ["Edm.Binary"],
+    INTEGER: ["Edm.Boolean"],
     BLOB: [],
     NUMERIC: [],
     UNKNOWN: []
