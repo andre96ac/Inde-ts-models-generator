@@ -7,7 +7,7 @@
     "saveJsonToFile": true,
 
     "initProperties": true, 
-    "initPropertiesMode": "normal",
+    "initPropertiesMode": "initMethod",
     "getFactoryMethod": true,
     "getClassNameMethod": true,
     "getRemoteEntityNameMethod": true,

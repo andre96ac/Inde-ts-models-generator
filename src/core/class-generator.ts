@@ -121,7 +121,7 @@ export class ClassGenerator{
         switch(type){
             case "Date":
                 // returnValue = " = new Date()";
-                returnValue = "";
+                returnValue = " = new Date(0)";
             break;
             case "string":
                 returnValue = ` = ''`;
