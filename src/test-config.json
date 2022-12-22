@@ -1,10 +1,13 @@
 {
 
+
+    "$schema": "./config-template.json",
     "componentsWhiteList": ["*"],
     "outDir": "./",
     "entitiesWhiteList": ["*"],
     "verbose": false,
-    "saveJsonToFile": true,
+    "saveJsonToFile": false,
+    "sourceUrl": "https://speedyweb.islashipweb.com/$metadata",
 
     "initProperties": true, 
     "initPropertiesMode": "initMethod",

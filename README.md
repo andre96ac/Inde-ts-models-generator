@@ -82,6 +82,7 @@ Optionally, you can provide a configuration file path, where you can specify mor
 ```
 
 
+>Please note: all options supplied via command line will take precedence of options in config file 
 
 
 
@@ -258,16 +259,20 @@ Here you can see the expected config file structure:
     {
         //#region GENERICS
         
-        // whitelist of components to use ( null => only main app, [*] => all, ["comp1", "comp2"] => only specified )
+        //whitelist of components to use ( null => only main app, [*] => all, ["comp1", "comp2"] => only specified )
         componentsWhiteList: string[] | null;
-        // whitelist of entities to use ( [*] => all, ["comp1", "comp2"] => only specified )
+        //whitelist of entities to use ( [*] => all, ["comp1", "comp2"] => only specified )
         entitiesWhiteList: string[] 
-        // directory where to create the "model" or "sql" folder
+        //directory where to create the "model" or "sql" folder
         outDir: string;
         //enable verbose mode
         verbose: boolean;
         //save InDe generated json descriptor to file (used for test purposes)
         saveJsonToFile: boolean;
+        //Url from which to retrieve the metadata (Warning: any url passed with the -u parameter takes precedence)
+        sourceUrl: string | null;
+        //FilePath from which to retrieve the metadata (Warning: any path passed with the -f parameter takes precedence)
+        sourceFilePath: string | null;
     
         //#endregion
     
@@ -322,7 +327,6 @@ Here you can see the expected config file structure:
         compAsDbName: boolean;
         //generate all table creation instructions in one single file per component (every instruction separated by ';')
         outputSingleFile: boolean
-
     
         //#endregion
     }
@@ -334,11 +338,15 @@ Here you can see the expected config file structure:
  and this is an example containing the default config. You can supply all, or only some properties; the others will get values below:
 ```json
 {
+    "$schema": "./config-schema.json",
+    "entitiesWhiteList": ["*"],
     "componentsWhiteList": ["*"],
     "outDir": "./",
-    "entitiesWhiteList": ["Firma", "FollowApp"],
-    "verbose": true,
-    "saveJsonToFile": true,
+    "verbose": false,
+    "saveJsonToFile": false,
+    "sourceUrl": null,
+    "sourceFilePath": null,
+
 
     "initProperties": true, 
     "initPropertiesMode": "normal",
@@ -365,6 +373,8 @@ Here you can see the expected config file structure:
 
 }
 ```
+
+>if you want the intellisense when compiling the config json, simply first add "$schema" property, linking the config-schema.json file (you can find it in you local user node modules folder)
 
 
 

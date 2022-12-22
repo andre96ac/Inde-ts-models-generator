@@ -14,7 +14,9 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "node build/commandList.js generate"
+    "postbuild": "npm run copy-assets",
+    "copy-assets": "copy \"src\\config-template.json\" \"build\" && copy \"src\\config-schema.json\" \"build\"",
+    "build-config-schema": "typescript-json-schema src/core/interfaces/custom-config-interface.ts * > src/config-schema.json"
   },
   "author": "Andrea Cuppini",
   "license": "ISC",

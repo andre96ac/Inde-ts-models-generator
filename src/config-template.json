@@ -1,9 +1,12 @@
 {
+    "$schema": "./config-schema.json",
     "entitiesWhiteList": ["*"],
     "componentsWhiteList": ["*"],
     "outDir": "./",
     "verbose": false,
     "saveJsonToFile": false,
+    "sourceUrl": null,
+    "sourceFilePath": null,
 
 
     "initProperties": true, 
@@ -28,7 +31,5 @@
     "ifNotExistCondition": true,
     "generateRowId": false,
     "outputSingleFile": false
-
-
 
 }

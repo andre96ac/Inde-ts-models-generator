@@ -3,16 +3,20 @@ export interface CustomConfig{
 
     //#region GENERICS
     
-    // whitelist of components to use ( null => only main app, [*] => all, ["comp1", "comp2"] => only specified )
+    //whitelist of components to use ( null => only main app, [*] => all, ["comp1", "comp2"] => only specified )
     componentsWhiteList: string[] | null;
-    // whitelist of entities to use ( [*] => all, ["comp1", "comp2"] => only specified )
+    //whitelist of entities to use ( [*] => all, ["comp1", "comp2"] => only specified )
     entitiesWhiteList: string[] 
-    // directory where to create the "model" or "sql" folder
+    //directory where to create the "model" or "sql" folder
     outDir: string;
     //enable verbose mode
     verbose: boolean;
     //save InDe generated json descriptor to file (used for test purposes)
     saveJsonToFile: boolean;
+    //Url from which to retrieve the metadata (Warning: any url passed with the -u parameter takes precedence)
+    sourceUrl: string | null;
+    //FilePath from which to retrieve the metadata (Warning: any path passed with the -f parameter takes precedence)
+    sourceFilePath: string | null;
 
     //#endregion
 

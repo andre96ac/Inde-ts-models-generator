@@ -309,7 +309,7 @@ export class ClassGenerator{
         let finalString = '';
 
         if(this.params.initProperties && this.params.initPropertiesMode == 'initMethod'){
-            const start = `\tinit(): typeof this {\n`
+            const start = `\tinit(): this {\n`
             const end = `\t\treturn this\n\t}`
 
             const properties: string = this.arProperties.length > 0? this.arProperties
@@ -342,7 +342,7 @@ export class ClassGenerator{
         let finalString = '';
 
         if(this.params.getInitAllMethods){
-            const start = `\tinitAll(): typeof this {\n`
+            const start = `\tinitAll(): this {\n`
             const end = `\t\treturn this\n\t}`
 
             const properties: string = this.arProperties.length > 0? this.arProperties

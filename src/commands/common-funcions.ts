@@ -19,12 +19,18 @@ const DEFAULT_CONFIG: CustomConfig = _DEFAULT_CONFIG as CustomConfig;
  * @param souceFile file da cui caricare l'xml
  * @returns 
  */
- export function loadMetadata(sourceUrl?: string, sourceFile?: string): Promise<string>{
+ export function loadMetadata(sourceUrl: string | null, sourceFile: string | null, config: CustomConfig): Promise<string>{
     if(!!sourceUrl && sourceUrl.length > 0){
         return loadMetadataFromUrl(sourceUrl)
     }
     else if(!!sourceFile && sourceFile.length > 0){
         return loadMetadataFromFile(sourceFile)
+    }
+    else if(!!config.sourceUrl && config.sourceUrl.length > 0){
+        return loadMetadataFromUrl(config.sourceUrl);
+    }
+    else if(!!config.sourceFilePath && config.sourceFilePath.length > 0){
+        return loadMetadataFromFile(config.sourceFilePath);
     }
     else{
         return Promise.reject(new CustomError('No such parameters, please supply an url or a file path for metadata infos', ERROR_CODES.ERR_PARAMETERS))

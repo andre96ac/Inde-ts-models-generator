@@ -48,7 +48,9 @@ export function generateModelsCommand(): void{
                         return true
                     }
                     else {
-                        throw new Error('Please specify at least one metadata url or filePath')
+                        console.warn('Warning: no sourceUrl or sourceFile supplied from command line; looking for config file...')
+                        return true;
+                        // throw new Error('Please specify at least one metadata url or filePath')
                     }
 
                 })
@@ -71,14 +73,14 @@ async function generateModelsCommandHandler(args: yargs.ArgumentsCamelCase<{}>){
 
     console.log(args)
 
-    const sourceUrl: string | null = args['url'] as string;
+    const sourceUrl: string | null =  args['url'] as string;
     const sourceFile:string | null =  args['file'] as string;
     const configSuppliedUrl: string | null = args['config'] as string;
 
     const config: CustomConfig = await loadConfig(configSuppliedUrl)
     console.log(config);
 
-    loadMetadata(sourceUrl, sourceFile)
+    loadMetadata(sourceUrl, sourceFile, config)
     
 
 

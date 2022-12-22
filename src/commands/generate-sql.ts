@@ -47,7 +47,9 @@ export function generateSqlCommand(): void{
                         return true
                     }
                     else {
-                        throw new Error('Please specify at least one metadata url or filePath')
+                        console.warn('Warning: no sourceUrl or sourceFile supplied from command line; looking for config file...')
+                        return true;
+                        // throw new Error('Please specify at least one metadata url or filePath')
                     }
 
                 })
@@ -77,7 +79,7 @@ async function generateSqlCommandHandler(args: yargs.ArgumentsCamelCase<{}>){
     const config: CustomConfig = await loadConfig(configSuppliedUrl)
     console.log(config);
 
-    loadMetadata(sourceUrl, sourceFile)
+    loadMetadata(sourceUrl, sourceFile, config)
     
 
 
