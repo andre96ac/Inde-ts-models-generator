@@ -131,7 +131,7 @@ async function main(){
         
         compAsDbName: false,
         ifNotExistCondition: true,
-        generateRowId: false,
+        generateRowId: null,
         outputSingleFile: false
         
     }
@@ -213,7 +213,7 @@ It is also possible to use the ```IndeGenerator.ClassGenerator.ClassGenerator```
         
         compAsDbName: false,
         ifNotExistCondition: true,
-        generateRowId: false,
+        generateRowId: null,
         outputSingleFile: false
 
     }
@@ -321,8 +321,8 @@ Here you can see the expected config file structure:
     
         //add "if not exist" statement to table creation command
         ifNotExistCondition: boolean;
-        //set false if you want to insert the "without rowid" statement to table creation command
-        generateRowId: boolean;
+        //choose if you want to insert the "without rowid" statement to table creation command: FALSE => statement NOT inserted; true => statement INSERTED; null => statement inserted only if no primary key available
+        generateRowId: boolean | null;
         //set true if you want to prefix the table name with the component name as db name, following syntax "CREATE TABLE {{comp name}}.{{entity name}}..."
         compAsDbName: boolean;
         //generate all table creation instructions in one single file per component (every instruction separated by ';')
@@ -368,7 +368,7 @@ Here you can see the expected config file structure:
     
     "compAsDbName": false,
     "ifNotExistCondition": true,
-    "generateRowId": false,
+    "generateRowId": null,
     "outputSingleFile": false
 
 }

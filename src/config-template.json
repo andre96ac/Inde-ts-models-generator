@@ -29,7 +29,7 @@
     
     "compAsDbName": false,
     "ifNotExistCondition": true,
-    "generateRowId": false,
+    "generateRowId": null,
     "outputSingleFile": false
 
 }

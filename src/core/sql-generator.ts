@@ -90,25 +90,53 @@ export class SqlGenerator{
     public getFileContentString(): string{
 
         const start = `CREATE TABLE ${this.params.ifNotExistCondition? `IF NOT EXISTS` : ''} ${this.dbTableName} (\n`;
-        const end = `)${this.params.generateRowId? '' : ' WITHOUT ROWID'}; \n\n`
+        const end = `\n)${this.generateRowId()? '' : ' WITHOUT ROWID'}; \n\n`
         const properties = this.getPropertiesString();
+        const primaryKeys = this.getPrimaryKeysString();
+
 
 
         return (
             start       +
             properties  +
+            primaryKeys +
             end
         )
 
         
     }
 
+    generateRowId(){
+        return this.params.generateRowId === null? !this.existPrimaryKeys() : this.params.generateRowId;
+    }
+
+
+    existPrimaryKeys(): boolean{
+        return this.arProperties.filter(el => el.isPrimary).length > 0
+    }
+
 
     private getPropertiesString(): string{
+        
         return this.arProperties
-                                .map(elProp => `\t${elProp.name} ${elProp.type}${elProp.isPrimary? ' PRIMARY KEY' : ''}${elProp.required? ' NOT NULL' : ''},\n`)
-                                .reduce((acc, el) => acc + el);
+                                .map(elProp => `\t${elProp.name} ${elProp.type}${elProp.required? ' NOT NULL' : ''},\n`)
+                                .reduce((acc, el) => acc + el)
+                                .slice(0, - 2);
     } 
+
+    getPrimaryKeysString(): string{
+
+
+        const arKeys = this.arProperties.filter(el => el.isPrimary);
+
+        const keysString: string = arKeys.length > 0? 
+                                arKeys.map(el => el.name)
+                                      .reduce((acc, el) => `${acc}, ${el}`)
+                                      :
+                                      '';
+
+        return  keysString.length > 0? `,\n\tPRIMARY KEY (${keysString})` : '';
+    }
 
     /**
     * Salva la classe nel percorso specificato
