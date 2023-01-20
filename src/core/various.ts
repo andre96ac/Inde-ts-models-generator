@@ -46,11 +46,11 @@ export const INDE_TS_TYPES_MAP: Record<TS_TYPES, INDE_TYPES[]> = {
 }
 
 export const INDE_SQL_TYPES_MAP: Record<SQL_TYPES, INDE_TYPES[]> = {
-    TEXT: ["Edm.String", "Edm.Guid", "Edm.DateTimeOffset", "Edm.TimeOfDay", "Edm.Binary"],
+    TEXT: ["Edm.String", "Edm.Guid", "Edm.TimeOfDay", "Edm.Binary"],
     REAL: ["Edm.Decimal", "Edm.Double"],
     INTEGER: ["Edm.Boolean", "Edm.Int16", "Edm.Int32", "Edm.Int64"],
     BLOB: [],
-    NUMERIC: ["Edm.Date"],
+    NUMERIC: ["Edm.Date", "Edm.DateTimeOffset"],
     UNKNOWN: []
 }
 
